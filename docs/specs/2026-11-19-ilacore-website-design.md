@@ -1,7 +1,7 @@
 # ILACORE Website — Design Spec
 
 **Date:** 2026-11-19
-**Status:** Approved in brainstorming, awaiting written-spec review
+**Status:** Approved 2026-11-20. Implementation plan: `docs/plans/2026-11-20-ilacore-website.md`
 **Location:** `D:\ilacore website`
 
 ## 1. Purpose
@@ -207,7 +207,7 @@ The snippet serves `ilacore.com` (redirecting `www.ilacore.com` to it) with auto
 `scripts/deploy.sh`, run from the developer machine (no Docker needed locally):
 ```
 npm ci && npm test                      (locally)
-  → rsync source to fms-vps:/home/fms/ilacore-site/src/
+  → git archive HEAD | ssh fms-vps tar -x into /home/fms/ilacore-site/src/   (rsync isn't installed locally)
   → on the VPS: docker build -t ilacore-site:<sha>
   → docker compose up -d with the new tag; wait for the container to be healthy
   → curl https://ilacore.com/ and /demo → if not 200, re-tag the previous image and up -d again
@@ -219,6 +219,7 @@ Before the FMS Caddy change ships, the site can be reviewed through an SSH tunne
 
 ### Risks
 - **Shared edge:** the website shares FMS production's Caddy, so if `fms-prod` is down, the website is too. The website can't break FMS, though: it only adds a snippet. Each snippet change is validated in a throwaway `caddy:2.11.6-alpine` container (`caddy validate`) before the FMS Caddy reloads it.
+- **Reloading Caddy:** the FMS Caddy's admin API is off, so `caddy reload` won't work as-is. At launch, choose between adding a container-local `admin localhost:2019` in the one-time FMS change (no-downtime reloads) and restarting the Caddy container per snippet change (seconds of FMS downtime).
 - **Shared resources:** the site container is capped at 384 MB, so it can't starve FMS.
 
 **Go-ahead needed each time:** the FMS repository change and its release, any change on the VPS, DNS changes for `ilacore.com`, creating the Resend account, and each production deploy.
