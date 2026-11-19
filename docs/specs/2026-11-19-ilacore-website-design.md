@@ -176,43 +176,59 @@ Field errors appear inline next to each field. No lead is ever dropped silently 
 - **Unit tests:** `lib/lead.ts` validation and honeypot behaviour; `products.ts` integrity (unique slugs, every live product has at least one screen).
 - **Before launch:** Lighthouse audit via Chrome DevTools, reduced-motion check, mobile check.
 
-## 8. Hosting and launch — ILACORE VPS
+## 8. Hosting and launch — FMS VPS
 
-The site runs on the existing ILACORE VPS (45.13.234.139: Ubuntu 24.04, Node 24, Caddy on 80/443), using the same pattern as the live Ops web app (`ilacore-web`, Next.js standalone behind Caddy). No Vercel, no Docker.
+The site runs on the FMS VPS (167.86.99.73, `ssh fms-vps`: Ubuntu 24.04, 4 CPU, 7.8 GB RAM, Docker; no Node on the host). Everything there runs in Docker Compose projects. The `fms-prod` stack's Caddy container (`fms-prod-caddy-1`) owns ports 80/443 and serves `myfms.ilacore.com`. Its Caddyfile ships inside each FMS release (`deploy/caddy/Caddyfile`, mounted read-only), and its admin API is off.
 
+### Approach
+The website is its own Compose project, `ilacore-site`, with one container. It joins the existing `fms-prod_edge` network so the FMS Caddy can reach it, and it publishes no ports.
+
+Routing needs a **one-time change in the FMS repository**, shipped in the next FMS release:
+1. The FMS Caddyfile gets one line at the end: `import /etc/caddy/sites/*.caddy`.
+2. `compose.prod.yml` mounts `/home/fms/edge-sites` (read-only) at `/etc/caddy/sites` in the Caddy container.
+
+After that, the website owns its own snippet file, `/home/fms/edge-sites/ilacore-site.caddy`, and never edits FMS files again. FMS releases leave the website untouched, and website releases leave FMS untouched.
+
+The snippet serves `ilacore.com` (redirecting `www.ilacore.com` to it) with automatic HTTPS, zstd/gzip, security headers matching the FMS block (HSTS, nosniff, frame-deny, CSP `frame-ancestors 'none'`), long cache headers for `/_next/static/*`, and `reverse_proxy ilacore-site:3000`.
+
+### Details
 | Item | Value |
 |---|---|
-| Build output | `next build` with `output: 'standalone'` |
-| App directory | `/opt/ilacore-site/` (releases in `releases/<git-sha>/`, `current` symlink) |
-| Process | systemd unit `ilacore-site.service`, unprivileged user `ilacore-site`, `MemoryMax=512M`, `Restart=on-failure` |
-| Port | `127.0.0.1:3100` (3000 and 8080–8094 are taken by telematics services) |
-| Env | `/etc/ilacore-site/site.env`, mode 600, holds the §5 variables |
-| Caddy | new file `/etc/caddy/site.caddy`, imported from the Caddyfile; serves `ilacore.com` and redirects `www.ilacore.com` to it; automatic HTTPS; gzip/zstd; long cache headers for `/_next/static/*` |
-| Logs | journald for the app; Caddy access log `/var/log/caddy/site-access.log` |
+| Image | `ilacore-site:<git-sha>`, multi-stage Dockerfile (`node:24-alpine`), Next.js `standalone` output, runs as non-root user |
+| Compose project | `/home/fms/ilacore-site/compose.yml`, project name `ilacore-site`, service `site`, network alias `ilacore-site` on external network `fms-prod_edge` |
+| Limits | `mem_limit: 384m`, `restart: unless-stopped`, `no-new-privileges`, read-only root filesystem with a tmpfs for `/tmp` |
+| Env | `/home/fms/ilacore-site/.env`, mode 600, holds the §5 variables |
+| Logs | Docker json-file (10 MB × 5), same as the FMS services |
+| Health | container healthcheck on `GET /` |
 
-**Naming:** everything uses `ilacore-site`, which doesn't clash with the telematics `ilacore-*` services, the `ilacore` database or the LPG project. The site uses no database.
+**Naming:** everything is called `ilacore-site`, which doesn't clash with any `fms-*` container, network or volume. The site uses no database and doesn't touch FMS's Postgres.
 
-**Isolation:** the deploy touches only `/opt/ilacore-site`, `/etc/ilacore-site`, `ilacore-site.service` and `/etc/caddy/site.caddy`. Caddy changes are checked with `caddy validate` before `systemctl reload caddy`, so a bad config can't take down `telematics.ilacore.com`.
-
-**Deploy flow:** a script `scripts/deploy.sh`, run from the developer machine:
+### Deploy flow
+`scripts/deploy.sh`, run from the developer machine (no Docker needed locally):
 ```
-npm ci && npm test && next build   (locally, no Docker)
-  → rsync standalone bundle + public + .next/static to releases/<sha>/ over SSH
-  → switch the `current` symlink → systemctl restart ilacore-site
-  → curl https://ilacore.com/ (and /demo) → if not 200, switch the symlink back and restart
+npm ci && npm test                      (locally)
+  → rsync source to fms-vps:/home/fms/ilacore-site/src/
+  → on the VPS: docker build -t ilacore-site:<sha>
+  → docker compose up -d with the new tag; wait for the container to be healthy
+  → curl https://ilacore.com/ and /demo → if not 200, re-tag the previous image and up -d again
 ```
-The last 3 releases are kept for instant rollback (`scripts/rollback.sh`). Automating this from GitHub Actions is a later option, not needed for launch.
+The last 3 image tags are kept for instant rollback (`scripts/rollback.sh`). Old tags are pruned so the disk (66% used) doesn't fill up.
 
-**Preview before going live:** at launch the site goes up first at a temporary host (`site-preview.45-13-234-139.sslip.io`) for review, then the `ilacore.com` DNS A record is pointed at the VPS.
+### Preview before going live
+Before the FMS Caddy change ships, the site can be reviewed through an SSH tunnel to the container. After it ships, the snippet first serves a temporary host (`site-preview.167-86-99-73.sslip.io`) for review. Then the `ilacore.com` DNS A record is pointed at 167.86.99.73 and the snippet is switched to the real domain.
 
-**Go-ahead needed each time:** installing anything on the VPS, editing the Caddy config, changing DNS for `ilacore.com`, creating the Resend account, and each production deploy.
+### Risks
+- **Shared edge:** the website shares FMS production's Caddy, so if `fms-prod` is down, the website is too. The website can't break FMS, though: it only adds a snippet. Each snippet change is validated in a throwaway `caddy:2.11.6-alpine` container (`caddy validate`) before the FMS Caddy reloads it.
+- **Shared resources:** the site container is capped at 384 MB, so it can't starve FMS.
+
+**Go-ahead needed each time:** the FMS repository change and its release, any change on the VPS, DNS changes for `ilacore.com`, creating the Resend account, and each production deploy.
 
 ## 9. Out of scope for launch
-Blog, client login, public pricing, multi-language (the structure leaves room for Arabic and French), CMS (content lives in TypeScript files), analytics (Caddy access logs only at launch; a privacy-friendly self-hosted tool can be added later).
+Blog, client login, public pricing, multi-language (the structure leaves room for Arabic and French), CMS (content lives in TypeScript files), analytics (none at launch; a privacy-friendly self-hosted tool can be added later).
 
 ## 10. Inputs needed from ILACORE
 - Real product screenshots for FMS and Telematics (placeholders, clearly marked, until then)
 - Sales email, phone and WhatsApp number
 - About page facts: founding, HQ, countries served
-- Domain confirmation, and access to its DNS settings (`telematics.ilacore.com` already points at the VPS)
+- Domain confirmation, and access to its DNS settings (`myfms.ilacore.com` already points at the FMS VPS)
 - Legal entity name for privacy and terms
