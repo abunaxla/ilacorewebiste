@@ -131,7 +131,7 @@ Query params `product` and `intent` pre-fill the form. Beside the form: WhatsApp
 ## 5. Architecture
 
 ### Stack
-- Next.js (App Router), all pages statically generated
+- Next.js (App Router), all pages statically generated, built as a `standalone` Node server (the demo form's server action needs a server)
 - Tailwind CSS with the tokens in §2
 - `next/font` self-hosting Nunito Sans, Inter and JetBrains Mono
 - shadcn/ui only for form controls and the mobile menu
@@ -176,17 +176,43 @@ Field errors appear inline next to each field. No lead is ever dropped silently 
 - **Unit tests:** `lib/lead.ts` validation and honeypot behaviour; `products.ts` integrity (unique slugs, every live product has at least one screen).
 - **Before launch:** Lighthouse audit via Chrome DevTools, reduced-motion check, mobile check.
 
-## 8. Hosting and launch
-- Git repository in `D:\ilacore website`; GitHub remote; Vercel project with preview deployments.
-- Domain assumed to be `ilacore.com`, to be confirmed.
-- Creating the GitHub repo, Vercel project or Resend account, adding DNS records, and deploying to production each need ILACORE's explicit go-ahead at the time.
+## 8. Hosting and launch — ILACORE VPS
+
+The site runs on the existing ILACORE VPS (45.13.234.139: Ubuntu 24.04, Node 24, Caddy on 80/443), using the same pattern as the live Ops web app (`ilacore-web`, Next.js standalone behind Caddy). No Vercel, no Docker.
+
+| Item | Value |
+|---|---|
+| Build output | `next build` with `output: 'standalone'` |
+| App directory | `/opt/ilacore-site/` (releases in `releases/<git-sha>/`, `current` symlink) |
+| Process | systemd unit `ilacore-site.service`, unprivileged user `ilacore-site`, `MemoryMax=512M`, `Restart=on-failure` |
+| Port | `127.0.0.1:3100` (3000 and 8080–8094 are taken by telematics services) |
+| Env | `/etc/ilacore-site/site.env`, mode 600, holds the §5 variables |
+| Caddy | new file `/etc/caddy/site.caddy`, imported from the Caddyfile; serves `ilacore.com` and redirects `www.ilacore.com` to it; automatic HTTPS; gzip/zstd; long cache headers for `/_next/static/*` |
+| Logs | journald for the app; Caddy access log `/var/log/caddy/site-access.log` |
+
+**Naming:** everything uses `ilacore-site`, which doesn't clash with the telematics `ilacore-*` services, the `ilacore` database or the LPG project. The site uses no database.
+
+**Isolation:** the deploy touches only `/opt/ilacore-site`, `/etc/ilacore-site`, `ilacore-site.service` and `/etc/caddy/site.caddy`. Caddy changes are checked with `caddy validate` before `systemctl reload caddy`, so a bad config can't take down `telematics.ilacore.com`.
+
+**Deploy flow:** a script `scripts/deploy.sh`, run from the developer machine:
+```
+npm ci && npm test && next build   (locally, no Docker)
+  → rsync standalone bundle + public + .next/static to releases/<sha>/ over SSH
+  → switch the `current` symlink → systemctl restart ilacore-site
+  → curl https://ilacore.com/ (and /demo) → if not 200, switch the symlink back and restart
+```
+The last 3 releases are kept for instant rollback (`scripts/rollback.sh`). Automating this from GitHub Actions is a later option, not needed for launch.
+
+**Preview before going live:** at launch the site goes up first at a temporary host (`site-preview.45-13-234-139.sslip.io`) for review, then the `ilacore.com` DNS A record is pointed at the VPS.
+
+**Go-ahead needed each time:** installing anything on the VPS, editing the Caddy config, changing DNS for `ilacore.com`, creating the Resend account, and each production deploy.
 
 ## 9. Out of scope for launch
-Blog, client login, public pricing, multi-language (the structure leaves room for Arabic and French), CMS (content lives in TypeScript files), analytics beyond Vercel Web Analytics.
+Blog, client login, public pricing, multi-language (the structure leaves room for Arabic and French), CMS (content lives in TypeScript files), analytics (Caddy access logs only at launch; a privacy-friendly self-hosted tool can be added later).
 
 ## 10. Inputs needed from ILACORE
 - Real product screenshots for FMS and Telematics (placeholders, clearly marked, until then)
 - Sales email, phone and WhatsApp number
 - About page facts: founding, HQ, countries served
-- Domain confirmation
+- Domain confirmation, and access to its DNS settings (`telematics.ilacore.com` already points at the VPS)
 - Legal entity name for privacy and terms
