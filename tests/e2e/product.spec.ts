@@ -26,7 +26,7 @@ test('Telematics labels the driver companion and crash SOS as coming soon', asyn
 
 test('product pages emit Product JSON-LD and link to industries', async ({ page }) => {
   await page.goto('/fms');
-  const raw = (await page.locator('script[type="application/ld+json"]').first().textContent()) ?? '{}';
+  const raw = (await page.locator('main script[type="application/ld+json"]').textContent()) ?? '{}';
   // Page content has no `<`, so this guards the output shape only; the escaping itself is unit-tested in json-ld.test.ts.
   expect(raw).not.toContain('<');
   const ld = JSON.parse(raw);

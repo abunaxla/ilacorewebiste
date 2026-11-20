@@ -3,20 +3,36 @@ import { Inter, JetBrains_Mono, Nunito_Sans } from 'next/font/google';
 import './globals.css';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
+import { site } from '@/content/site';
+import { safeJsonLd } from '@/lib/json-ld';
 
 const nunito = Nunito_Sans({ subsets: ['latin'], variable: '--font-nunito-sans', display: 'swap' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(site.url),
   title: { default: 'ILACORE', template: '%s | ILACORE' },
+  description: 'Fuel management and fleet telematics for operators across Africa and the Middle East.',
+  openGraph: { type: 'website', siteName: 'ILACORE', locale: 'en' },
+  twitter: { card: 'summary_large_image' },
+};
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'ILACORE',
+  url: site.url,
+  logo: `${site.url}/brand/logo-color.svg`,
+  areaServed: ['Africa', 'Middle East'],
+  contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${nunito.variable} ${inter.variable} ${mono.variable}`}>
       <body className="flex min-h-screen flex-col">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationJsonLd) }} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-control focus:bg-navy focus:px-4 focus:py-2 focus:text-white"

@@ -7,6 +7,7 @@ import { Screenshot } from '@/components/screenshot';
 import { safeJsonLd } from '@/lib/json-ld';
 import { industries } from '@/content/industries';
 import { getProduct, liveProducts } from '@/content/products';
+import { site } from '@/content/site';
 
 export const dynamicParams = false;
 
@@ -34,6 +35,7 @@ export default async function ProductPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
+    url: `${site.url}/${product.slug}`,
     description: product.seoDescription,
     brand: { '@type': 'Organization', name: 'ILACORE' },
     category: product.slug === 'fms' ? 'Fuel management system' : 'Fleet telematics',
