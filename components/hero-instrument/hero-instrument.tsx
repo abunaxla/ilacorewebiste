@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { CYCLE_MS, STATIC_PHASE, TANK_CAPACITY_L, instrumentState } from './model';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { STATIC_PHASE, instrumentState, phaseAt, resumeOrigin } from './model';
 import { ROUTE, routePoint } from './route';
 
 const QUERY = '(prefers-reduced-motion: reduce)';
@@ -22,18 +22,21 @@ export function HeroInstrument() {
     () => true,
   );
   const [livePhase, setLivePhase] = useState(STATIC_PHASE);
+  const [paused, setPaused] = useState(false);
+  const heldPhase = useRef(0);
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || paused) return;
     let raf = 0;
-    const start = performance.now();
+    const origin = resumeOrigin(performance.now(), heldPhase.current);
     const tick = (now: number) => {
-      setLivePhase(((now - start) % CYCLE_MS) / CYCLE_MS);
+      heldPhase.current = phaseAt(now, origin);
+      setLivePhase(heldPhase.current);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [reduced]);
+  }, [reduced, paused]);
 
   const s = instrumentState(reduced ? STATIC_PHASE : livePhase);
   const truck = routePoint(s.truckProgress);
@@ -49,8 +52,8 @@ export function HeroInstrument() {
       <div className="grid gap-5 sm:grid-cols-[1fr_auto]">
         <svg viewBox="0 0 440 250" className="h-auto w-full" aria-hidden="true">
           <path d={ROUTE} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeDasharray="4 6" />
-          <circle cx="40" cy="210" r="5" fill="#dca238" />
-          <circle cx="400" cy="40" r="5" fill="#dca238" />
+          <circle cx="40" cy="210" r="5" fill="#ffffff" fillOpacity="0.6" />
+          <circle cx="400" cy="40" r="5" fill="#ffffff" fillOpacity="0.6" />
           <text x="52" y="236" {...label}>MOMBASA DEPOT</text>
           <text x="300" y="26" {...label}>KAMPALA STN 04</text>
           <circle cx={truck.x} cy={truck.y} r="12" fill="none" stroke="#1cd1a1" strokeOpacity="0.4" />
@@ -68,9 +71,20 @@ export function HeroInstrument() {
         <div className="min-w-0"><dt className="text-white/70">SOLD</dt><dd className="text-20">{fmt(s.sold)} L</dd></div>
         <div className="min-w-0"><dt className="text-white/70">UNACCOUNTED</dt><dd className="text-20 text-gold">{fmt(s.unaccounted)} L</dd></div>
       </dl>
+      {!reduced && (
+        <button
+          type="button"
+          aria-pressed={paused}
+          onClick={() => setPaused((p) => !p)}
+          className="mt-4 inline-flex min-h-11 min-w-11 items-center rounded-control border border-white/40 px-4 text-14 text-white hover:bg-white/10"
+        >
+          Pause animation
+        </button>
+      )}
       <figcaption className="sr-only">
-        Illustration: a diesel tank holding {fmt(s.tankLitres)} of {fmt(TANK_CAPACITY_L)} litres while a delivery truck drives
-        from the depot to the station, with delivered, sold and unaccounted litres reconciled.
+        Illustration: a delivery truck drives from the Mombasa depot to Kampala station 04 while the station&apos;s diesel
+        tank is sold down. The instrument reconciles litres delivered against litres sold and the tank level, and
+        flags the small difference, for example 140 litres, as unaccounted.
       </figcaption>
     </figure>
   );

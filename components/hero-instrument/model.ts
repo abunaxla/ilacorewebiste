@@ -9,6 +9,12 @@ const DELIVERY_L = SOLD_PER_LOOP + LOSS_PER_LOOP; // what the truck brings, so t
 const DRIVE_END = 0.85; // the truck arrives at 85% of the loop
 const DELIVERY_END = 0.97; // the tank is refilled by 97%
 
+/** Loop phase in [0, 1) for a clock reading and the time the loop's phase 0 occurred. */
+export const phaseAt = (now: number, origin: number) => ((((now - origin) % CYCLE_MS) + CYCLE_MS) % CYCLE_MS) / CYCLE_MS;
+
+/** Origin that makes the loop continue from `heldPhase` when resumed at `now`. */
+export const resumeOrigin = (now: number, heldPhase: number) => now - heldPhase * CYCLE_MS;
+
 const ease = (t: number) => t * t * (3 - 2 * t);
 
 export function instrumentState(rawPhase: number) {

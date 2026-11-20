@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STATIC_PHASE, TANK_CAPACITY_L, instrumentState } from '@/components/hero-instrument/model';
+import { CYCLE_MS, STATIC_PHASE, TANK_CAPACITY_L, instrumentState, phaseAt, resumeOrigin } from '@/components/hero-instrument/model';
 
 describe('instrumentState', () => {
   it('starts with the tank at 24,418 L and the truck at the depot', () => {
@@ -52,5 +52,17 @@ describe('instrumentState', () => {
 
   it('wraps phases outside [0, 1)', () => {
     expect(instrumentState(1.25)).toEqual(instrumentState(0.25));
+  });
+
+  it('resumes from the held phase without jumping', () => {
+    const origin = resumeOrigin(50000, 0.4);
+    expect(phaseAt(50000, origin)).toBeCloseTo(0.4, 10);
+    expect(phaseAt(50000 + CYCLE_MS * 0.1, origin)).toBeCloseTo(0.5, 10);
+  });
+
+  it('keeps phaseAt within [0, 1) across the wrap', () => {
+    expect(phaseAt(CYCLE_MS * 2.25, 0)).toBeCloseTo(0.25, 10);
+    expect(phaseAt(0, 1000)).toBeGreaterThanOrEqual(0);
+    expect(phaseAt(0, 1000)).toBeLessThan(1);
   });
 });
