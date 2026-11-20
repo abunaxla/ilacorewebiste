@@ -7,13 +7,15 @@ services:
   site:
     image: ilacore-site:${SITE_TAG:?set SITE_TAG}
     env_file: .env
+    pull_policy: never
     restart: unless-stopped
     mem_limit: 256m
     cpus: 1.0
+    pids_limit: 256
     read_only: true
     tmpfs:
-      - /tmp
-      - /app/.next/cache:uid=1001,gid=1001,mode=0755
+      - /tmp:size=64m
+      - /app/.next/cache:size=64m,uid=1001,gid=1001,mode=0755
     cap_drop:
       - ALL
     security_opt:

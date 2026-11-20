@@ -79,11 +79,12 @@ describe('compose.yml', () => {
   it('has no volumes besides tmpfs and mounts nothing from the host', () => {
     expect(c).not.toMatch(/^\s*volumes:/m);
     expect(c).toContain('/app/.next/cache');
-    expect(c).toMatch(/^\s*- \/tmp$/m);
+    expect(c).toContain('- /tmp:size=64m\n');
+    expect(c).toContain('- /app/.next/cache:size=64m,');
   });
   it('applies the resource and hardening limits', () => {
     for (const s of [
-      'mem_limit: 256m', 'cpus: 1.0', 'restart: unless-stopped', 'read_only: true',
+      'mem_limit: 256m', 'cpus: 1.0', 'pids_limit: 256', 'pull_policy: never', 'restart: unless-stopped', 'read_only: true',
       'no-new-privileges:true', 'cap_drop:', '- ALL', 'max-size: 10m', 'max-file: "5"',
     ]) expect(c).toContain(s);
   });
@@ -137,7 +138,7 @@ describe('deploy scripts', () => {
   });
   it('remote-deploy builds niced, with only NEXT_PUBLIC build args, and checks the env file', () => {
     const s = read('scripts/remote-deploy.sh');
-    expect(s).toContain('nice -n 10 docker build');
+    expect(s).toContain('nice -n 10 ionice -c3 docker build');
     const args = s.match(/--build-arg \w+/g) ?? [];
     expect(args.sort()).toEqual(['--build-arg NEXT_PUBLIC_SITE_URL', '--build-arg NEXT_PUBLIC_WHATSAPP_NUMBER']);
     for (const n of ['NEXT_PUBLIC_WHATSAPP_NUMBER', 'NEXT_PUBLIC_SITE_URL', 'RESEND_API_KEY', 'LEAD_TO_EMAIL', 'LEAD_FROM_EMAIL']) {
@@ -146,5 +147,39 @@ describe('deploy scripts', () => {
     expect(s).toContain('Refusing to build');
     expect(s).toContain('{ grep -vxF -f tags.keep tags.log || true; } | while');
     expect(s).not.toMatch(/echo .*\$\(envval/);
+  });
+});
+
+describe('fix round 1 hardening', () => {
+  const scripts = ['scripts/remote-deploy.sh', 'scripts/rollback.sh'];
+  for (const f of scripts) {
+    it(`${f} pins the compose project and uses DC for every compose call`, () => {
+      const s = read(f);
+      expect(s).toContain('unset COMPOSE_FILE COMPOSE_PROJECT_NAME COMPOSE_PROFILES');
+      expect(s).toContain('DC=(docker compose -p ilacore-site -f /home/fms/ilacore-site/compose.yml)');
+      const raw = s.split('\n').filter((l) => /docker compose/.test(l) && !l.startsWith('DC=('));
+      expect(raw).toEqual([]);
+      expect(s).toContain('"${DC[@]}"');
+      expect(s).toContain('flock -n 9');
+    });
+  }
+  it('remote-deploy refuses low disk or memory and builds with ionice', () => {
+    const s = read('scripts/remote-deploy.sh');
+    expect(s).toContain("docker info -f '{{.DockerRootDir}}'");
+    expect(s).toContain('5242880');
+    expect(s).toContain('MemAvailable');
+    expect(s).toContain('1572864');
+    expect(s).toContain('nice -n 10 ionice -c3 docker build');
+  });
+  it('removes an image only when its tag is no longer recorded', () => {
+    expect(read('scripts/remote-deploy.sh')).toContain('grep -qxF "$SHA" tags.log');
+    expect(read('scripts/rollback.sh')).toContain('grep -qxF "$CUR" tags.log');
+  });
+  it('drops includeSubDomains from HSTS and extracts without owner', () => {
+    for (const f of ['deploy/caddy/ilacore-site.caddy', 'deploy/caddy/ilacore-site.preview.caddy']) {
+      expect(read(f)).not.toContain('includeSubDomains');
+      expect(read(f)).toContain('Strict-Transport-Security "max-age=31536000"');
+    }
+    expect(read('scripts/deploy.sh')).toContain('tar -x --no-same-owner');
   });
 });

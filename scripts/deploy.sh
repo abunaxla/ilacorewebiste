@@ -28,6 +28,6 @@ npm run test:e2e
 
 echo "Shipping $SHA to $HOST"
 ssh "$HOST" "mkdir -p $REMOTE && rm -rf $REMOTE/src && mkdir $REMOTE/src"
-git archive --format=tar HEAD | ssh "$HOST" "tar -x -C $REMOTE/src"
+git archive --format=tar HEAD | ssh "$HOST" "tar -x --no-same-owner -C $REMOTE/src"
 ssh "$HOST" "cat > $REMOTE/compose.yml" < deploy/compose.yml
 ssh "$HOST" "bash -s -- $SHA $PUBLIC_URL" < scripts/remote-deploy.sh
