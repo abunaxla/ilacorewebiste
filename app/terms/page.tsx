@@ -20,7 +20,7 @@ export default function Terms() {
           <h2>Screenshots and trademarks</h2>
           <p>The ILACORE name, logo and product screenshots belong to {site.legalEntity}. Don&apos;t reuse them without permission.</p>
           <h2>Contact</h2>
-          <p>For questions about these terms, email <a className="text-navy underline" href={`mailto:${site.email}`}>{site.email}</a>.</p>
+          <p>For questions about these terms, email <a className="text-navy underline" href={`mailto:${site.infoEmail}`}>{site.infoEmail}</a>.</p>
         </div>
       </div>
     </main>

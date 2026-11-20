@@ -24,6 +24,7 @@ export default function About() {
           <h2 id="contact" className="text-25">Contact</h2>
           <ul className="mt-4 space-y-2 text-16">
             <li><a className="text-navy underline" href={`mailto:${site.email}`}>{site.email}</a></li>
+            <li><a className="text-navy underline" href={`mailto:${site.infoEmail}`}>{site.infoEmail}</a></li>
             {site.phone && <li><a className="text-navy underline" href={telLink()}>{site.phone}</a></li>}
             <li><a className="text-navy underline" href={whatsappLink()} target="_blank" rel="noopener noreferrer">Chat on WhatsApp<NewTabCue /></a></li>
           </ul>

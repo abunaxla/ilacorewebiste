@@ -27,6 +27,7 @@ export function SiteFooter() {
           <h2 className="font-display text-16 text-white">Contact</h2>
           <ul className="mt-3 space-y-2 text-14">
             <li><a href={`mailto:${site.email}`} className={link}>{site.email}</a></li>
+            <li><a href={`mailto:${site.infoEmail}`} className={link}>{site.infoEmail}</a></li>
             {site.phone && <li><a href={telLink()} className={link}>{site.phone}</a></li>}
             <li><a href={whatsappLink()} className={link} target="_blank" rel="noopener noreferrer">Chat on WhatsApp<NewTabCue /></a></li>
           </ul>

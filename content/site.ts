@@ -4,8 +4,9 @@ import { liveProducts } from './products';
 export const site = {
   name: 'ILACORE',
   legalEntity: 'ILACORE', // CONFIRM: registered legal entity name
-  email: 'sales@ilacore.com', // CONFIRM
-  phone: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '', // CONFIRM: separate phone line, if any
+  email: 'sales@ilacore.com', // demo and sales enquiries
+  infoEmail: 'info@ilacore.com', // general enquiries
+  phone: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '', // business line is the same number as WhatsApp
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   regions: 'Africa and the Middle East',
   url: process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, '') || 'https://ilacore.com',

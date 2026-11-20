@@ -28,7 +28,7 @@ export default function Privacy() {
           <h2>How long we keep it</h2>
           <p>We keep your request while we are discussing a demo or a contract with you, and delete it when you ask.</p>
           <h2>Your rights</h2>
-          <p>To see, correct or delete what we hold about you, email <a className="text-navy underline" href={`mailto:${site.email}`}>{site.email}</a>.</p>
+          <p>To see, correct or delete what we hold about you, email <a className="text-navy underline" href={`mailto:${site.infoEmail}`}>{site.infoEmail}</a>.</p>
         </div>
       </div>
     </main>
