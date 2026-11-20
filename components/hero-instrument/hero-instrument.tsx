@@ -49,7 +49,7 @@ export function HeroInstrument() {
       data-surface="dark"
       className="min-w-0 rounded-panel border border-white/15 bg-navy-deep p-5 text-white"
     >
-      <p aria-hidden="true" className="mb-3 text-14 uppercase tracking-wide text-white/70">Illustration</p>
+      <p aria-hidden="true" className="mb-3 text-14 text-white/70">Illustration</p>
       <div className="grid gap-5 sm:grid-cols-[1fr_auto]">
         <svg viewBox="0 0 440 250" className="h-auto w-full" aria-hidden="true">
           <path d={ROUTE} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeDasharray="4 6" />
