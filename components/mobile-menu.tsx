@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { ButtonLink } from '@/components/button-link';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 export function MobileMenu({ items }: { items: { href: string; label: string }[] }) {
@@ -30,6 +31,7 @@ export function MobileMenu({ items }: { items: { href: string; label: string }[]
             </Link>
           ))}
         </nav>
+        <ButtonLink href="/demo" className="mt-4 justify-center">Book a demo</ButtonLink>
       </SheetContent>
     </Sheet>
   );

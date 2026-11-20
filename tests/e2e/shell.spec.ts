@@ -16,6 +16,9 @@ test('skip link is the first focusable element and targets main', async ({ page 
   const skip = page.getByRole('link', { name: 'Skip to content' });
   await expect(skip).toBeFocused();
   await expect(skip).toHaveAttribute('href', '#main');
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/#main$/);
+  await expect(page.locator('#main')).toBeFocused();
 });
 
 test.describe('mobile', () => {
@@ -29,8 +32,20 @@ test.describe('mobile', () => {
     await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByRole('link', { name: 'Telematics', exact: true })).toBeVisible();
+    const demo = dialog.getByRole('link', { name: 'Book a demo' });
+    await expect(demo).toBeVisible();
+    await expect(demo).toBeEnabled();
+    await expect(demo).toHaveAttribute('href', '/demo');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
+    await expect(header.getByRole('button', { name: 'Open menu' })).toBeFocused();
+  });
+
+  test('does not overflow horizontally at 360px', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto('/');
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
   });
 });
 

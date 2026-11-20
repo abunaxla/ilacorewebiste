@@ -1,3 +1,3 @@
 export default function Home() {
-  return <main id="main"><h1>ILACORE</h1></main>;
+  return <main id="main" tabIndex={-1}><h1>ILACORE</h1></main>;
 }
