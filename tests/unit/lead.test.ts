@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { LEAD_MAX, createRateLimiter, formatLeadEmail, mockTransport, parseLead, resendTransport, submitLead } from '@/lib/lead';
+import { LEAD_MAX, createRateLimiter, getTransport, formatLeadEmail, mockTransport, parseLead, resendTransport, submitLead } from '@/lib/lead';
 
 function form(fields: Record<string, string | string[]>) {
   const fd = new FormData();
@@ -68,7 +68,36 @@ describe('parseLead', () => {
   });
 });
 
+describe('parseLead hardening', () => {
+  it('rejects line breaks and control characters in text fields', () => {
+    const r = parseLead(form({ ...valid, company: 'X\r\nBcc: a@b.c', name: 'A\nSize: 1', size: 'x\ty' }));
+    if (r.ok) throw new Error('expected invalid');
+    expect(r.fieldErrors.company).toBe('Remove line breaks from this field.');
+    expect(r.fieldErrors.name).toBe('Remove line breaks from this field.');
+    expect(r.fieldErrors.size).toBe('Remove line breaks from this field.');
+  });
+
+  it('dedupes repeated products and rejects more products than exist', () => {
+    const r = parseLead(form({ ...valid, products: ['fms', 'fms', 'fms', 'fms'] }));
+    expect(r.ok && r.data.products).toEqual(['fms']);
+  });
+});
+
 describe('submitLead', () => {
+  it('returns failed, not a throw, when no transport is configured', async () => {
+    const keys = ['LEAD_TRANSPORT', 'RESEND_API_KEY', 'LEAD_FROM_EMAIL', 'LEAD_TO_EMAIL'];
+    const saved = keys.map((k) => process.env[k]);
+    keys.forEach((k) => delete process.env[k]);
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const r = await submitLead(form(valid), { ip: '1', transport: getTransport(), limiter: allow });
+      expect(r.status).toBe('failed');
+    } finally {
+      spy.mockRestore();
+      keys.forEach((k, i) => (saved[i] === undefined ? delete process.env[k] : (process.env[k] = saved[i])));
+    }
+  });
+
   it('pretends success and sends nothing when the honeypot is filled', async () => {
     const transport = vi.fn();
     const r = await submitLead(form({ ...valid, website: 'http://spam' }), { ip: '1', transport, limiter: allow });
@@ -98,6 +127,8 @@ describe('submitLead', () => {
     const r = await submitLead(form(valid), { ip: '1', transport, limiter: allow });
     expect(r.status).toBe('sent');
     expect(transport.mock.calls[0][0].subject).toBe('Demo request: Coast Fuels (Kenya)');
+    const text = transport.mock.calls[0][0].text;
+    for (const v of ['Amina Yusuf', 'Coast Fuels', 'Kenya', '+254 712 345 678']) expect(text).toContain(v);
   });
 
   it('reports failure and keeps the values when the send fails, without logging personal data', async () => {
@@ -121,7 +152,37 @@ describe('createRateLimiter', () => {
   });
 });
 
+describe('createRateLimiter eviction', () => {
+  it('evicts expired keys first and does not reset live limits', () => {
+    let t = 0;
+    const rl = createRateLimiter({ limit: 1, windowMs: 1000, now: () => t, maxKeys: 3 });
+    rl.hit('old1');
+    rl.hit('old2');
+    t = 2000;
+    rl.hit('live1');
+    rl.hit('live2'); // 4 keys > 3: expired old1 and old2 go
+    expect(rl.hit('live1')).toBe(false);
+    expect(rl.hit('live2')).toBe(false);
+  });
+
+  it('drops the oldest keys when all are still live', () => {
+    const rl = createRateLimiter({ limit: 1, windowMs: 1000, now: () => 0, maxKeys: 2 });
+    rl.hit('a');
+    rl.hit('b');
+    rl.hit('c');
+    expect(rl.hit('c')).toBe(false);
+    expect(rl.hit('b')).toBe(false);
+    expect(rl.hit('a')).toBe(true);
+  });
+});
+
 describe('formatLeadEmail', () => {
+  it('flattens line breaks so nothing can forge headers or lines', () => {
+    const { subject, text } = formatLeadEmail({ name: 'A\nSize: 9', company: 'X\r\nBcc: a@b.c', country: 'Kenya', phone: '+254', products: ['fms'] });
+    expect(subject).not.toMatch(/[\r\n]/);
+    expect(text.split('\n')).toHaveLength(6);
+  });
+
   it('lists every field and marks a missing size', () => {
     const { text } = formatLeadEmail({ name: 'Amina Yusuf', company: 'Coast Fuels', country: 'Kenya', phone: '+254', products: ['fms', 'telematics'] });
     expect(text).toContain('Products: ILACORE FMS, ILACORE Telematics');
@@ -137,6 +198,7 @@ describe('transports', () => {
     const t = resendTransport({ apiKey: 'k', from: 'site@x', to: 'sales@x', fetchImpl });
     await t({ subject: 's', text: 't' });
     expect(fetchImpl.mock.calls[0][0]).toBe('https://api.resend.com/emails');
+    expect(fetchImpl.mock.calls[0][1].headers.Authorization).toBe('Bearer k');
     expect(JSON.parse(fetchImpl.mock.calls[0][1].body)).toMatchObject({ from: 'site@x', to: ['sales@x'], subject: 's', text: 't' });
     await expect(t({ subject: 's', text: 't' })).rejects.toThrow();
   });

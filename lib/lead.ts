@@ -7,17 +7,28 @@ const slugs = products.map((p) => p.slug) as [ProductSlug, ...ProductSlug[]];
 /** Maximum lengths for the free-text fields. The form's `maxLength` attributes must match. */
 export const LEAD_MAX = { name: 100, company: 120, phone: 20, size: 60 } as const;
 
+const NO_BREAKS_MESSAGE = 'Remove line breaks from this field.';
+const hasNoControlChars = (s: string) => !/[\u0000-\u001f\u007f]/.test(s);
+
 const schema = z.object({
-  name: z.string().trim().min(2, 'Enter your name.').max(LEAD_MAX.name, 'Name is too long.'),
-  company: z.string().trim().min(2, 'Enter your company name.').max(LEAD_MAX.company, 'Company name is too long.'),
+  name: z.string().trim().min(2, 'Enter your name.').max(LEAD_MAX.name, 'Name is too long.').refine(hasNoControlChars, NO_BREAKS_MESSAGE),
+  company: z
+    .string()
+    .trim()
+    .min(2, 'Enter your company name.')
+    .max(LEAD_MAX.company, 'Company name is too long.')
+    .refine(hasNoControlChars, NO_BREAKS_MESSAGE),
   country: z.enum(countries, { message: 'Choose your country.' }),
   phone: z
     .string()
     .trim()
     .max(LEAD_MAX.phone, 'Phone number is too long.')
     .regex(/^\+?[0-9 ()-]{7,20}$/, 'Enter a phone or WhatsApp number, including the country code.'),
-  products: z.array(z.enum(slugs, { message: 'Choose at least one product.' })).min(1, 'Choose at least one product.'),
-  size: z.string().trim().max(LEAD_MAX.size, 'Fleet size is too long.').optional(),
+  products: z
+    .array(z.enum(slugs, { message: 'Choose at least one product.' }))
+    .min(1, 'Choose at least one product.')
+    .max(slugs.length, 'Choose at least one product.'),
+  size: z.string().trim().max(LEAD_MAX.size, 'Fleet size is too long.').refine(hasNoControlChars, NO_BREAKS_MESSAGE).optional(),
 });
 
 export type LeadInput = z.infer<typeof schema>;
@@ -49,7 +60,7 @@ export function parseLead(fd: FormData):
   | { ok: false; fieldErrors: FieldErrors; values: FormValues } {
   const values = valuesOf(fd);
   const size = String(values.size).trim();
-  const result = schema.safeParse({ ...values, size: size === '' ? undefined : size });
+  const result = schema.safeParse({ ...values, products: [...new Set(values.products)], size: size === '' ? undefined : size });
   if (result.success) return { ok: true, data: result.data };
   const fieldErrors: FieldErrors = {};
   for (const issue of result.error.issues) {
@@ -59,7 +70,7 @@ export function parseLead(fd: FormData):
   return { ok: false, fieldErrors, values };
 }
 
-export function createRateLimiter({ limit, windowMs, now = Date.now }: { limit: number; windowMs: number; now?: () => number }): RateLimiter {
+export function createRateLimiter({ limit, windowMs, now = Date.now, maxKeys = 10_000 }: { limit: number; windowMs: number; now?: () => number; maxKeys?: number }): RateLimiter {
   const hits = new Map<string, number[]>();
   return {
     hit(key) {
@@ -67,24 +78,34 @@ export function createRateLimiter({ limit, windowMs, now = Date.now }: { limit: 
       const recent = (hits.get(key) ?? []).filter((at) => t - at < windowMs);
       const allowed = recent.length < limit;
       if (allowed) recent.push(t);
-      if (hits.size > 10_000) hits.clear(); // keep memory bounded on a long-running server
+      hits.delete(key); // re-insert so Map order tracks recency
       hits.set(key, recent);
+      if (hits.size > maxKeys) {
+        // keep memory bounded: drop expired keys first, then the oldest
+        for (const [k, times] of hits) if (times.every((at) => t - at >= windowMs)) hits.delete(k);
+        for (const k of hits.keys()) {
+          if (hits.size <= maxKeys) break;
+          hits.delete(k);
+        }
+      }
       return allowed;
     },
   };
 }
 
+const flat = (s: string) => s.replace(/[\r\n\t]/g, ' ');
+
 export function formatLeadEmail(lead: LeadInput) {
   const names = lead.products.map((s) => products.find((p) => p.slug === s)?.name ?? s).join(', ');
   return {
-    subject: `Demo request: ${lead.company} (${lead.country})`,
+    subject: flat(`Demo request: ${lead.company} (${lead.country})`),
     text: [
-      `Name: ${lead.name}`,
-      `Company: ${lead.company}`,
-      `Country: ${lead.country}`,
-      `Phone/WhatsApp: ${lead.phone}`,
+      flat(`Name: ${lead.name}`),
+      flat(`Company: ${lead.company}`),
+      flat(`Country: ${lead.country}`),
+      flat(`Phone/WhatsApp: ${lead.phone}`),
       `Products: ${names}`,
-      `Size: ${lead.size ?? 'not given'}`,
+      flat(`Size: ${lead.size ?? 'not given'}`),
     ].join('\n'),
   };
 }
