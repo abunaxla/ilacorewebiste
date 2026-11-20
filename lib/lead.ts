@@ -1,11 +1,12 @@
+import 'server-only';
 import { z } from 'zod';
+import { LEAD_MAX } from './lead-limits';
 import { countries } from '@/content/countries';
 import { products, type ProductSlug } from '@/content/products';
 
 const slugs = products.map((p) => p.slug) as [ProductSlug, ...ProductSlug[]];
 
-/** Maximum lengths for the free-text fields. The form's `maxLength` attributes must match. */
-export const LEAD_MAX = { name: 100, company: 120, phone: 20, size: 60 } as const;
+export { LEAD_MAX };
 
 const NO_BREAKS_MESSAGE = 'Remove line breaks from this field.';
 const hasNoControlChars = (s: string) => !/[\u0000-\u001f\u007f]/.test(s);

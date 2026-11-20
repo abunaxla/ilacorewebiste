@@ -10,6 +10,7 @@ site-preview.167-86-99-73.sslip.io {
 		X-Frame-Options "DENY"
 		Content-Security-Policy "frame-ancestors 'none'"
 		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
 		X-Robots-Tag "noindex"
 		-Server
 	}

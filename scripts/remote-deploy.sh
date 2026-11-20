@@ -38,6 +38,17 @@ if [ -n "$missing" ]; then
   exit 1
 fi
 
+# A mock transport or a test rate limit must never reach production.
+transport="$(envval LEAD_TRANSPORT)"
+if [ -n "$transport" ] && [ "$transport" != "resend" ]; then
+  echo "Refusing to build: LEAD_TRANSPORT in /home/fms/ilacore-site/.env must be empty or 'resend'." >&2
+  exit 1
+fi
+if [ -n "$(envval LEAD_RATE_LIMIT)" ]; then
+  echo "Refusing to build: LEAD_RATE_LIMIT is test-only and must be empty in /home/fms/ilacore-site/.env." >&2
+  exit 1
+fi
+
 # Do not starve the FMS: refuse to build on a nearly full disk or low memory.
 DOCKER_ROOT="$(docker info -f '{{.DockerRootDir}}' </dev/null)"
 FREE_KB="$(df -Pk "$DOCKER_ROOT" | awk 'NR==2 {print $4}')"

@@ -55,6 +55,13 @@ describe('env example', () => {
       if (name !== 'NEXT_PUBLIC_SITE_URL') expect(value).toBe('');
     }
   });
+  it('keeps the test-only variables below the test-only comment', () => {
+    const e = read('.env.example');
+    const marker = e.indexOf('# Test-only');
+    expect(marker).toBeGreaterThan(-1);
+    expect(e.indexOf('LEAD_TRANSPORT=')).toBeGreaterThan(marker);
+    expect(e.indexOf('LEAD_RATE_LIMIT=')).toBeGreaterThan(marker);
+  });
 });
 
 describe('compose.yml', () => {
@@ -97,6 +104,7 @@ describe('caddy snippets', () => {
       expect(s).toContain('reverse_proxy ilacore-site:3000');
       for (const h of ['Strict-Transport-Security', 'X-Content-Type-Options "nosniff"', 'X-Frame-Options "DENY"', "frame-ancestors 'none'"]) expect(s).toContain(h);
       expect(s).toContain('/_next/static/*');
+      expect(s).toContain('Permissions-Policy "camera=(), microphone=(), geolocation=()"');
     });
     it(`${f} is a self-contained site block that leaves FMS alone`, () => {
       const code = read(f).split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
@@ -147,6 +155,17 @@ describe('deploy scripts', () => {
     expect(s).toContain('Refusing to build');
     expect(s).toContain('{ grep -vxF -f tags.keep tags.log || true; } | while');
     expect(s).not.toMatch(/echo .*\$\(envval/);
+  });
+  it('remote-deploy refuses a mock transport or a test rate limit in production', () => {
+    const s = read('scripts/remote-deploy.sh');
+    expect(s).toContain('envval LEAD_TRANSPORT');
+    expect(s).toContain('"$transport" != "resend"');
+    expect(s).toContain('envval LEAD_RATE_LIMIT');
+    expect(s).toMatch(/LEAD_TRANSPORT in .*must be empty or 'resend'/);
+  });
+  it('deploy.sh runs e2e with CI=1 so no stale server is reused', () => {
+    expect(read('scripts/deploy.sh')).toContain('CI=1 npm run test:e2e');
+    expect(read('playwright.config.ts')).toContain('reuseExistingServer: !process.env.CI');
   });
 });
 

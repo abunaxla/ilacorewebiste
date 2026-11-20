@@ -19,6 +19,10 @@ export default function Privacy() {
           <p>Only what you type into the demo form: your name, company, country, phone or WhatsApp number, the products you are interested in and, if you choose, your fleet or station size.</p>
           <h2>How we use it</h2>
           <p>We email it to our sales team so we can contact you about a demo. We don&apos;t sell it, and we don&apos;t share it with anyone else for marketing.</p>
+          {/* CONFIRM: legal review */}
+          <p>When you send the demo form, it is sent by email through Resend, a third-party email service, to {site.legalEntity}&apos;s sales inbox.</p>
+          {/* CONFIRM: legal review */}
+          <p>We also use your IP address briefly, in memory, to limit repeated submissions and stop abuse. Our web server keeps standard access logs.</p>
           <h2>Cookies and analytics</h2>
           <p>This website sets no tracking cookies and runs no analytics.</p>
           <h2>How long we keep it</h2>

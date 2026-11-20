@@ -9,7 +9,7 @@ export function DemoSection({ product, heading = 'Book a demo' }: { product?: Pr
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         <h2 id="demo-cta" className="text-31 text-white sm:text-39">{heading}</h2>
         <p className="reading mt-4 text-20 text-white/85">
-          We&apos;ll show you the system on your own tanks or vehicles and explain what installation involves. It takes about 30 minutes.
+          We&apos;ll walk you through the system and explain what installation involves.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href={href}>Book a demo</ButtonLink>

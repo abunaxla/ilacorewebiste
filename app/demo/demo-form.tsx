@@ -6,7 +6,8 @@ import { useSearchParams } from 'next/navigation';
 import { countries } from '@/content/countries';
 import { products } from '@/content/products';
 import { whatsappLink } from '@/content/site';
-import { LEAD_MAX, type FormValues, type LeadResult } from '@/lib/lead';
+import { LEAD_MAX } from '@/lib/lead-limits';
+import type { FormValues, LeadResult } from '@/lib/lead';
 import { requestDemo } from './actions';
 
 const input =
@@ -126,7 +127,7 @@ export function DemoForm() {
           autoComplete="tel"
           required
           maxLength={LEAD_MAX.phone}
-          placeholder="+254 712 345 678"
+          placeholder="+254 7XX XXX XXX"
           defaultValue={v('phone')}
           aria-invalid={!!errors.phone}
           aria-describedby={errors.phone ? 'phone-error' : undefined}

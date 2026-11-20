@@ -44,7 +44,7 @@ export default function Home() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
           <h2 id="offline" className="text-31 sm:text-39">Works offline</h2>
           <p className="reading mt-4 text-20 text-ink-muted">
-            Coverage drops on highways and at remote depots. Gateways and in-vehicle devices keep recording while offline and send everything once the signal returns, so no reading is lost.
+            Coverage drops on highways and at remote depots. Gateways and in-vehicle devices keep recording while offline and send everything once the signal returns, so readings recorded offline still reach your dashboard once the connection is back.
           </p>
         </div>
       </section>

@@ -24,7 +24,7 @@ SHA="$(git rev-parse --short HEAD)"
 
 npm ci
 npm test
-npm run test:e2e
+CI=1 npm run test:e2e
 
 echo "Shipping $SHA to $HOST"
 ssh "$HOST" "mkdir -p $REMOTE && rm -rf $REMOTE/src && mkdir $REMOTE/src"
