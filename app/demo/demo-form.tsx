@@ -41,9 +41,10 @@ export function DemoForm() {
           href={whatsappLink('Hello ILACORE, I just requested a demo.')}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 inline-flex min-h-11 items-center rounded-control bg-gold px-5 font-display font-bold text-navy-deep"
+          className="mt-5 inline-flex min-h-11 items-center rounded-control bg-navy px-5 font-display font-bold text-white"
         >
           Chat on WhatsApp
+          <NewTabCue />
         </a>
       </div>
     );
