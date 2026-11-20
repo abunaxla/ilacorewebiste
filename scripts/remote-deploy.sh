@@ -30,12 +30,21 @@ envval() {
 }
 
 missing=""
-for name in NEXT_PUBLIC_WHATSAPP_NUMBER NEXT_PUBLIC_SITE_URL RESEND_API_KEY LEAD_TO_EMAIL LEAD_FROM_EMAIL; do
+for name in NEXT_PUBLIC_WHATSAPP_NUMBER NEXT_PUBLIC_SITE_URL; do
   [ -n "$(envval "$name")" ] || missing="$missing $name"
 done
 if [ -n "$missing" ]; then
   echo "Refusing to build: these are empty or missing in /home/fms/ilacore-site/.env:$missing" >&2
   exit 1
+fi
+# Email settings may be empty before Resend is set up (launch plan Step 7): the form
+# then reports a failed send and offers WhatsApp. Warn loudly so it is never forgotten.
+mail_missing=""
+for name in RESEND_API_KEY LEAD_TO_EMAIL LEAD_FROM_EMAIL; do
+  [ -n "$(envval "$name")" ] || mail_missing="$mail_missing $name"
+done
+if [ -n "$mail_missing" ]; then
+  echo "WARNING: email is not configured ($mail_missing). Demo requests will fall back to WhatsApp until these are set." >&2
 fi
 
 # A mock transport or a test rate limit must never reach production.
