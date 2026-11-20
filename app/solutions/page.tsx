@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function Solutions() {
   return (
     <main id="main" tabIndex={-1}>
-      <PageHero title="Solutions" lead="Two products in use today, and more in development. ILACORE installs and supports each one." />
+      <PageHero title="Solutions" lead="Two products in use today, and one in development. ILACORE installs and supports each one." />
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
         {products.map((p) => (
           <section key={p.slug} aria-labelledby={`sol-${p.slug}`} className="flex flex-wrap items-baseline justify-between gap-6 border-b border-line py-12">
@@ -27,7 +27,7 @@ export default function Solutions() {
               <p className="mt-2 text-16 text-ink-muted">{p.summary}</p>
             </div>
             {p.status === 'live' ? (
-              <Link href={`/${p.slug}`} className="font-display text-16 font-bold text-navy underline decoration-gold decoration-2 underline-offset-4">See {p.name}</Link>
+              <Link href={`/${p.slug}`} className="font-display text-16 font-bold text-navy underline decoration-navy/40 decoration-2 underline-offset-4">See {p.name}</Link>
             ) : (
               <ButtonLink href={`/demo?product=${p.slug}&intent=interest`} variant="outline-dark">Register interest</ButtonLink>
             )}

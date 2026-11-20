@@ -25,7 +25,7 @@ export default function Industries() {
               <ul className="mt-5 flex flex-wrap gap-4">
                 {i.products.map((slug) => (
                   <li key={slug}>
-                    <Link href={`/${slug}`} className="font-display font-bold text-navy underline decoration-gold decoration-2 underline-offset-4">{getProduct(slug)!.name}</Link>
+                    <Link href={`/${slug}`} className="font-display font-bold text-navy underline decoration-navy/40 decoration-2 underline-offset-4">{getProduct(slug)!.name}</Link>
                   </li>
                 ))}
               </ul>
