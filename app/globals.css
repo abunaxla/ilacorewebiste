@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #010875;
+  --color-navy-deep: #000133;
+  --color-gold: #dca238;
+  --color-emerald: #1cd1a1;
+  --color-paper: #f9f9ff;
+  --color-ink: #141c29;
+  --color-ink-muted: #454652;
+  --color-line: #c6c5d4;
+
+  --font-display: var(--font-nunito-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-20: 1.25rem;
+  --text-25: 1.5625rem;
+  --text-31: 1.9375rem;
+  --text-39: 2.4375rem;
+  --text-49: 3.0625rem;
+  --text-61: 3.8125rem;
+
+  --radius-control: 4px;
+  --radius-panel: 8px;
+}
+
+@layer base {
+  html { background: var(--color-paper); color: var(--color-ink); }
+  body { font-family: var(--font-body); font-size: var(--text-16); line-height: 1.6; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.1; color: var(--color-navy); }
+
+  /* Focus ring: navy on light surfaces (WCAG 1.4.11); gold only on navy surfaces. */
+  :focus-visible { outline: 3px solid var(--color-navy); outline-offset: 2px; }
+  [data-surface="dark"] :focus-visible,
+  [data-surface="dark"]:focus-visible { outline-color: var(--color-gold); }
+}
+
+@layer components {
+  .reading { max-width: 75ch; }
+  .readout { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+}
