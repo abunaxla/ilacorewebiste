@@ -11,7 +11,7 @@ export default defineConfig({
   webServer: {
     command: `npm run build && npx next start -p ${PORT}`,
     url: `http://localhost:${PORT}`,
-    timeout: 240_000,
+    timeout: 480_000,
     reuseExistingServer: !process.env.CI,
     env: {
       LEAD_TRANSPORT: 'mock',
