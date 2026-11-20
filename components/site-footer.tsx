@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NewTabCue } from './new-tab-cue';
 import { liveProducts } from '@/content/products';
 import { site, telLink, whatsappLink } from '@/content/site';
 import { Logo } from './logo';
@@ -27,7 +28,7 @@ export function SiteFooter() {
           <ul className="mt-3 space-y-2 text-14">
             <li><a href={`mailto:${site.email}`} className={link}>{site.email}</a></li>
             {site.phone && <li><a href={telLink()} className={link}>{site.phone}</a></li>}
-            <li><a href={whatsappLink()} className={link} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></li>
+            <li><a href={whatsappLink()} className={link} target="_blank" rel="noopener noreferrer">Chat on WhatsApp<NewTabCue /></a></li>
           </ul>
         </div>
         <nav aria-label="Legal">

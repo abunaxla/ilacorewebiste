@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { NewTabCue } from '@/components/new-tab-cue';
 import { DemoSection } from '@/components/demo-section';
 import { PageHero } from '@/components/page-hero';
 import { site, telLink, whatsappLink } from '@/content/site';
@@ -24,7 +25,7 @@ export default function About() {
           <ul className="mt-4 space-y-2 text-16">
             <li><a className="text-navy underline" href={`mailto:${site.email}`}>{site.email}</a></li>
             {site.phone && <li><a className="text-navy underline" href={telLink()}>{site.phone}</a></li>}
-            <li><a className="text-navy underline" href={whatsappLink()} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></li>
+            <li><a className="text-navy underline" href={whatsappLink()} target="_blank" rel="noopener noreferrer">Chat on WhatsApp<NewTabCue /></a></li>
           </ul>
         </section>
       </div>

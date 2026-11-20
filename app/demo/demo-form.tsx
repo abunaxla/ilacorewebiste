@@ -1,5 +1,6 @@
 'use client';
 
+import { NewTabCue } from '@/components/new-tab-cue';
 import { useActionState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { countries } from '@/content/countries';
@@ -63,7 +64,7 @@ export function DemoForm() {
           Your request didn&apos;t send. Message us on WhatsApp or try again.{' '}
           <a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
             Chat on WhatsApp
-          </a>
+          <NewTabCue /></a>
         </p>
       )}
       {state.status === 'rate-limited' && (
@@ -71,7 +72,7 @@ export function DemoForm() {
           Too many attempts. Try again in a few minutes, or message us on WhatsApp.{' '}
           <a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
             Chat on WhatsApp
-          </a>
+          <NewTabCue /></a>
         </p>
       )}
 

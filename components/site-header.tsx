@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { navItems } from '@/content/site';
+import { NavLink } from './nav-link';
 import { ButtonLink } from './button-link';
 import { Logo } from './logo';
 import { MobileMenu } from './mobile-menu';
@@ -16,9 +17,9 @@ export function SiteHeader() {
           <ul className="flex gap-6">
             {items.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="font-display text-16 font-semibold text-navy hover:underline">
+                <NavLink href={item.href} className="font-display text-16 font-semibold text-navy hover:underline">
                   {item.label}
-                </Link>
+                </NavLink>
               </li>
             ))}
           </ul>

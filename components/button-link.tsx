@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NewTabCue } from './new-tab-cue';
 
 const styles = {
   gold: 'bg-gold text-navy-deep hover:bg-[#e6b252]',
@@ -26,6 +27,7 @@ export function ButtonLink({
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       {children}
+      {external && <NewTabCue />}
     </Link>
   );
 }

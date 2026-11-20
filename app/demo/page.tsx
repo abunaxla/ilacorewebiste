@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { NewTabCue } from '@/components/new-tab-cue';
 import { Suspense } from 'react';
 import { site, telLink, whatsappLink } from '@/content/site';
 import { DemoForm } from './demo-form';
@@ -24,7 +25,7 @@ export default function DemoPage() {
         <aside aria-labelledby="direct" className="lg:border-l lg:border-line lg:pl-10">
           <h2 id="direct" className="text-25">Prefer to talk now?</h2>
           <ul className="mt-4 space-y-3 text-16">
-            <li><a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a></li>
+            <li><a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">Chat on WhatsApp<NewTabCue /></a></li>
             {site.phone && <li><a className="text-navy underline" href={telLink()}>{site.phone}</a></li>}
             <li><a className="text-navy underline" href={`mailto:${site.email}`}>{site.email}</a></li>
           </ul>
