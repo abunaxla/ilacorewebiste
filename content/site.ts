@@ -8,7 +8,7 @@ export const site = {
   phone: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '', // CONFIRM: separate phone line, if any
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   regions: 'Africa and the Middle East',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ilacore.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, '') || 'https://ilacore.com',
 };
 
 export function whatsappLink(message?: string) {
