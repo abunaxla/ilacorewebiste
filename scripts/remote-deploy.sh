@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # Never let the ambient environment redirect compose to another project or file.
-unset COMPOSE_FILE COMPOSE_PROJECT_NAME COMPOSE_PROFILES
+unset COMPOSE_FILE COMPOSE_PROJECT_NAME COMPOSE_PROFILES COMPOSE_ENV_FILES DOCKER_HOST DOCKER_CONTEXT
 DC=(docker compose -p ilacore-site -f /home/fms/ilacore-site/compose.yml)
 
 SHA="${1:?usage: remote-deploy.sh <sha> [public-url]}"
@@ -58,7 +58,7 @@ export NEXT_PUBLIC_WHATSAPP_NUMBER NEXT_PUBLIC_SITE_URL
 
 PREV="$(tail -n 1 tags.log 2>/dev/null || true)"
 
-# nice and ionice keep the FMS's CPU and disk priority above the build.
+# The build itself runs inside dockerd, so nice/ionice here barely help; the disk and memory guard above is the real protection. Deploy at a quiet hour.
 nice -n 10 ionice -c3 docker build -t "ilacore-site:$SHA" \
   --build-arg NEXT_PUBLIC_WHATSAPP_NUMBER \
   --build-arg NEXT_PUBLIC_SITE_URL \

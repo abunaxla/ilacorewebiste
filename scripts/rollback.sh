@@ -5,7 +5,7 @@ set -euo pipefail
 HOST="${DEPLOY_HOST:-fms-vps}"
 ssh "$HOST" 'bash -s' <<'REMOTE'
 set -euo pipefail
-unset COMPOSE_FILE COMPOSE_PROJECT_NAME COMPOSE_PROFILES
+unset COMPOSE_FILE COMPOSE_PROJECT_NAME COMPOSE_PROFILES COMPOSE_ENV_FILES DOCKER_HOST DOCKER_CONTEXT
 DC=(docker compose -p ilacore-site -f /home/fms/ilacore-site/compose.yml)
 cd /home/fms/ilacore-site
 exec 9>/home/fms/ilacore-site/.lock
