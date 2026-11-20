@@ -1,0 +1,34 @@
+# ILACORE marketing site. Shares the VPS with the FMS but touches nothing of it:
+# it joins only the external edge network (so FMS's Caddy can reach it), publishes
+# no ports, mounts no volumes and holds no database connection.
+name: ilacore-site
+
+services:
+  site:
+    image: ilacore-site:${SITE_TAG:?set SITE_TAG}
+    env_file: .env
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 1.0
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache:uid=1001,gid=1001,mode=0755
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+    networks:
+      edge:
+        aliases:
+          - ilacore-site
+
+networks:
+  edge:
+    external: true
+    name: fms-prod_edge

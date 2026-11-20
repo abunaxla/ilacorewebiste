@@ -56,3 +56,95 @@ describe('env example', () => {
     }
   });
 });
+
+describe('compose.yml', () => {
+  const c = read('deploy/compose.yml');
+  it('joins fms-prod_edge with the ilacore-site alias and publishes no ports', () => {
+    expect(c).toContain('name: ilacore-site');
+    expect(c).toContain('name: fms-prod_edge');
+    expect(c).toContain('external: true');
+    expect(c).toContain('- ilacore-site');
+    expect(c).not.toMatch(/^\s*ports:/m);
+    expect(c).not.toMatch(/^\s*expose:/m);
+  });
+  it('joins no network other than fms-prod_edge', () => {
+    const names = c.match(/fms-[A-Za-z0-9_-]+/g) ?? [];
+    expect(names.length).toBeGreaterThan(0);
+    for (const n of names) expect(n).toBe('fms-prod_edge');
+    expect(c).not.toMatch(/fms-prod_(db|pg-egress)|staging|dev\b/);
+    const top = c.split(/^networks:/m)[1];
+    expect(top.match(/^ {2}[a-z]\w*:/gm)).toEqual(['  edge:']);
+    expect(c).not.toContain('network_mode');
+  });
+  it('has no volumes besides tmpfs and mounts nothing from the host', () => {
+    expect(c).not.toMatch(/^\s*volumes:/m);
+    expect(c).toContain('/app/.next/cache');
+    expect(c).toMatch(/^\s*- \/tmp$/m);
+  });
+  it('applies the resource and hardening limits', () => {
+    for (const s of [
+      'mem_limit: 256m', 'cpus: 1.0', 'restart: unless-stopped', 'read_only: true',
+      'no-new-privileges:true', 'cap_drop:', '- ALL', 'max-size: 10m', 'max-file: "5"',
+    ]) expect(c).toContain(s);
+  });
+});
+
+describe('caddy snippets', () => {
+  for (const f of ['deploy/caddy/ilacore-site.caddy', 'deploy/caddy/ilacore-site.preview.caddy']) {
+    it(`${f} proxies to the container with security headers`, () => {
+      const s = read(f);
+      expect(s).toContain('reverse_proxy ilacore-site:3000');
+      for (const h of ['Strict-Transport-Security', 'X-Content-Type-Options "nosniff"', 'X-Frame-Options "DENY"', "frame-ancestors 'none'"]) expect(s).toContain(h);
+      expect(s).toContain('/_next/static/*');
+    });
+    it(`${f} is a self-contained site block that leaves FMS alone`, () => {
+      const code = read(f).split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
+      expect(code).not.toMatch(/^\{/m);
+      expect(code).not.toContain('trusted_proxies');
+      expect(code).not.toContain('myfms');
+      expect(code).not.toMatch(/^\s*import\b/m);
+    });
+  }
+  it('redirects www to the apex on the real snippet', () => {
+    expect(read('deploy/caddy/ilacore-site.caddy')).toMatch(/www\.ilacore\.com \{\s*redir https:\/\/ilacore\.com\{uri\} permanent/);
+    expect(read('deploy/caddy/ilacore-site.caddy')).not.toContain('noindex');
+  });
+  it('serves only the sslip.io host on the preview snippet, marked noindex', () => {
+    const s = read('deploy/caddy/ilacore-site.preview.caddy');
+    expect(s).toContain('site-preview.167-86-99-73.sslip.io {');
+    expect(s).not.toContain('ilacore.com {');
+    expect(s).toContain('X-Robots-Tag "noindex"');
+  });
+});
+
+describe('deploy scripts', () => {
+  for (const f of ['scripts/deploy.sh', 'scripts/remote-deploy.sh', 'scripts/rollback.sh']) {
+    it(`${f} stops on the first error and uses LF line endings`, () => {
+      const s = read(f);
+      expect(s).toContain('set -euo pipefail');
+      expect(s).not.toContain('\r');
+    });
+    it(`${f} never touches fms-* resources or prunes broadly`, () => {
+      const s = read(f);
+      expect(s).not.toMatch(/Caddyfile|fms-prod|fms-staging|docker system|image prune|volume|network (rm|prune|create)/);
+      expect(s).not.toMatch(/docker (stop|rm|restart|kill)\b/);
+    });
+  }
+  it('ships committed files only and never the local .env', () => {
+    const s = read('scripts/deploy.sh');
+    expect(s).toContain('git archive');
+    expect(s).not.toMatch(/\.env/);
+  });
+  it('remote-deploy builds niced, with only NEXT_PUBLIC build args, and checks the env file', () => {
+    const s = read('scripts/remote-deploy.sh');
+    expect(s).toContain('nice -n 10 docker build');
+    const args = s.match(/--build-arg \w+/g) ?? [];
+    expect(args.sort()).toEqual(['--build-arg NEXT_PUBLIC_SITE_URL', '--build-arg NEXT_PUBLIC_WHATSAPP_NUMBER']);
+    for (const n of ['NEXT_PUBLIC_WHATSAPP_NUMBER', 'NEXT_PUBLIC_SITE_URL', 'RESEND_API_KEY', 'LEAD_TO_EMAIL', 'LEAD_FROM_EMAIL']) {
+      expect(s).toContain(n);
+    }
+    expect(s).toContain('Refusing to build');
+    expect(s).toContain('{ grep -vxF -f tags.keep tags.log || true; } | while');
+    expect(s).not.toMatch(/echo .*\$\(envval/);
+  });
+});

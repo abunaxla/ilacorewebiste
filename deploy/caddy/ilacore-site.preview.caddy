@@ -1,0 +1,19 @@
+# Preview host for the site before DNS cuts over. Imported by the FMS Caddy via:
+#   import /etc/caddy/sites/*.caddy
+# Self-contained site block only: no global options, nothing for myfms.ilacore.com.
+# No trusted_proxies here: the app's rate limiter reads the right-most X-Forwarded-For entry.
+site-preview.167-86-99-73.sslip.io {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Content-Security-Policy "frame-ancestors 'none'"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Robots-Tag "noindex"
+		-Server
+	}
+	@static path /_next/static/*
+	header @static Cache-Control "public, max-age=31536000, immutable"
+	reverse_proxy ilacore-site:3000
+}
