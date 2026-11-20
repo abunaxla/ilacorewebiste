@@ -9,7 +9,7 @@ import { LEAD_MAX, type FormValues, type LeadResult } from '@/lib/lead';
 import { requestDemo } from './actions';
 
 const input =
-  'mt-1 block w-full min-h-11 rounded-control border border-line bg-white px-3 text-16 text-ink aria-[invalid=true]:border-[#b42318]';
+  'mt-1 block w-full min-h-11 rounded-control border border-ink-muted bg-white px-3 text-16 text-ink aria-[invalid=true]:border-[#b42318]';
 const label = 'font-display text-16 font-bold text-navy';
 const err = 'mt-1 text-14 text-[#b42318]';
 
@@ -18,6 +18,7 @@ export function DemoForm() {
   const [state, action, pending] = useActionState<LeadResult, FormData>(requestDemo, { status: 'idle' });
   const formRef = useRef<HTMLFormElement>(null);
   const sentRef = useRef<HTMLDivElement>(null);
+  const alertRef = useRef<HTMLParagraphElement>(null);
 
   // Move focus to the first invalid field after a failed validation, and to the confirmation once sent.
   useEffect(() => {
@@ -25,6 +26,8 @@ export function DemoForm() {
       formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
     } else if (state.status === 'sent') {
       sentRef.current?.focus();
+    } else if (state.status === 'failed' || state.status === 'rate-limited') {
+      alertRef.current?.focus();
     }
   }, [state]);
 
@@ -56,7 +59,7 @@ export function DemoForm() {
   return (
     <form ref={formRef} key={formKey} action={action} noValidate className="relative min-w-0 space-y-6">
       {state.status === 'failed' && (
-        <p role="alert" className="rounded-panel border border-[#b42318] bg-white p-4 text-16 text-ink">
+        <p ref={alertRef} tabIndex={-1} role="alert" className="rounded-panel border border-[#b42318] bg-white p-4 text-16 text-ink">
           Your request didn&apos;t send. Message us on WhatsApp or try again.{' '}
           <a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
             Chat on WhatsApp
@@ -64,7 +67,7 @@ export function DemoForm() {
         </p>
       )}
       {state.status === 'rate-limited' && (
-        <p role="alert" className="rounded-panel border border-[#b42318] bg-white p-4 text-16 text-ink">
+        <p ref={alertRef} tabIndex={-1} role="alert" className="rounded-panel border border-[#b42318] bg-white p-4 text-16 text-ink">
           Too many attempts. Try again in a few minutes, or message us on WhatsApp.{' '}
           <a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
             Chat on WhatsApp
