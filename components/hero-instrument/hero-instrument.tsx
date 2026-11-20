@@ -78,7 +78,7 @@ export function HeroInstrument() {
           onClick={() => setPaused((p) => !p)}
           className="mt-4 inline-flex min-h-11 min-w-11 items-center rounded-control border border-white/40 px-4 text-14 text-white hover:bg-white/10"
         >
-          Pause animation
+          {paused ? 'Play animation' : 'Pause animation'}
         </button>
       )}
       <figcaption className="sr-only">
