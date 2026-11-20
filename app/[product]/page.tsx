@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { ButtonLink } from '@/components/button-link';
 import { DemoSection } from '@/components/demo-section';
 import { Screenshot } from '@/components/screenshot';
+import { safeJsonLd } from '@/lib/json-ld';
 import { industries } from '@/content/industries';
 import { getProduct, liveProducts } from '@/content/products';
 
@@ -40,7 +41,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <main id="main" tabIndex={-1}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
       <section data-surface="dark" className="bg-navy text-white">
         <div className={`${container} grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[5fr_7fr]`}>
