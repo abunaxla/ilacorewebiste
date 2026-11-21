@@ -3,7 +3,7 @@ import { liveProducts } from './products';
 // Values marked CONFIRM must be checked with ILACORE before launch (spec §10, Task 14).
 export const site = {
   name: 'ILACORE',
-  legalEntity: 'ILACORE', // CONFIRM: registered legal entity name
+  legalEntity: 'ILACORE Limited',
   email: 'sales@ilacore.com', // demo and sales enquiries
   infoEmail: 'info@ilacore.com', // general enquiries
   phone: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '', // business line is the same number as WhatsApp
