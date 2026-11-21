@@ -5,6 +5,7 @@ export type ProductStatus = 'live' | 'coming-soon';
 export type Screen = { src: string; alt: string; caption: string; width: number; height: number };
 export type ChainIcon = 'pump' | 'controller' | 'network' | 'dashboard' | 'camera' | 'phone';
 export type ChainStep = { icon: ChainIcon; label: string; detail: string };
+export type HardwarePhoto = { src: string; alt: string; caption: string; width: number; height: number };
 export type Feature = { title: string; body: string; screen?: Screen };
 export type FeatureGroup = { job: string; features: Feature[] };
 
@@ -18,7 +19,7 @@ export type Product = {
   problems: { title: string; body: string }[];
   featureGroups: FeatureGroup[];
   comingSoon: Feature[];
-  hardware: { body: string; offline: string; chain: ChainStep[] };
+  hardware: { body: string; offline: string; chain: ChainStep[]; photo?: HardwarePhoto };
   screens: Screen[];
   industries: IndustrySlug[];
   seoDescription: string;
@@ -84,6 +85,7 @@ export const products: Product[] = [
     hardware: {
       body: 'A forecourt controller on site connects your pumps and tank probes. ILACORE installs and commissions it.',
       offline: 'If the internet drops, the controller keeps every sale and sends it once the connection is back.',
+      photo: { src: '/hardware/forecourt-controller.jpg', alt: 'A forecourt controller in a sealed black box with cable glands on two sides and a clear lid over its circuit board', caption: 'The forecourt controller. Photo: Technotrade.', width: 1024, height: 819 },
       chain: [
         { icon: 'pump', label: 'Pumps and tank probes', detail: 'The equipment already on your forecourt.' },
         { icon: 'controller', label: 'Forecourt controller', detail: 'Installed on site. Reads every sale and tank level.' },
@@ -154,6 +156,7 @@ export const products: Product[] = [
     hardware: {
       body: 'An AI dashcam in each vehicle, with road-facing and driver-facing cameras, GPS and 4G. ILACORE installs and configures it.',
       offline: 'Out of coverage, the dashcam stores its positions and sends them when the signal returns, so the trip stays complete.',
+      photo: { src: '/hardware/dashcam.jpg', alt: 'A black AI dashcam with a vented body, a driver-facing camera with four infrared lights at its base and two cables at the top', caption: 'The AI dashcam. Photo: MettaX.', width: 393, height: 635 },
       chain: [
         { icon: 'camera', label: 'AI dashcam', detail: 'In the cab. Road and driver cameras, with GPS.' },
         { icon: 'network', label: 'Mobile network', detail: 'Built-in 4G sends positions, alarms and video.' },

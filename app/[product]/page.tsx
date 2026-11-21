@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ButtonLink } from '@/components/button-link';
@@ -119,8 +120,27 @@ export default async function ProductPage({ params }: Props) {
       <section aria-labelledby="hardware" className="border-t border-line py-16 sm:py-24">
         <div className={container}>
           <h2 id="hardware" className="text-31 sm:text-39">What we install</h2>
-          <p className="reading mt-4 text-20 text-ink">{product.hardware.body}</p>
-          <p className="reading mt-3 text-16 text-ink-muted">{product.hardware.offline}</p>
+          <div className={product.hardware.photo ? 'mt-4 grid items-center gap-10 lg:grid-cols-[7fr_5fr]' : 'mt-4'}>
+            <div className="min-w-0">
+              <p className="reading text-20 text-ink">{product.hardware.body}</p>
+              <p className="reading mt-3 text-16 text-ink-muted">{product.hardware.offline}</p>
+            </div>
+            {product.hardware.photo && (
+              <figure className="min-w-0">
+                <div className="flex h-64 items-center justify-center rounded-panel border border-line bg-white p-6 sm:h-80">
+                  <Image
+                    src={product.hardware.photo.src}
+                    alt={product.hardware.photo.alt}
+                    width={product.hardware.photo.width}
+                    height={product.hardware.photo.height}
+                    sizes="(min-width: 1024px) 420px, 90vw"
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
+                <figcaption className="mt-3 text-14 text-ink-muted">{product.hardware.photo.caption}</figcaption>
+              </figure>
+            )}
+          </div>
           <InstallChain steps={product.hardware.chain} />
         </div>
       </section>

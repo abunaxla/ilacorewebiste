@@ -33,6 +33,16 @@ describe('products', () => {
     }
   });
 
+  it('points every hardware photo at a real file with a description and credit', () => {
+    for (const p of liveProducts()) {
+      const photo = p.hardware.photo;
+      expect(photo).toBeDefined();
+      expect(existsSync(join(process.cwd(), 'public', photo!.src))).toBe(true);
+      expect(photo!.alt.length).toBeGreaterThan(20);
+      expect(photo!.caption).toMatch(/Photo: /);
+    }
+  });
+
   it('ships FMS and Telematics as live and LPG as coming soon', () => {
     expect(liveProducts().map((p) => p.slug)).toEqual(['fms', 'telematics']);
     expect(comingSoonProducts().map((p) => p.slug)).toEqual(['lpg']);
