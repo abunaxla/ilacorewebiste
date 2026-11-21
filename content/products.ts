@@ -117,7 +117,7 @@ export const products: Product[] = [
       {
         job: 'Catch risk early',
         features: [
-          { title: 'AI dashcam alerts', body: 'Forward collision, lane departure, pedestrian ahead, fatigue, phone use and distraction, detected on the camera itself.', screen: placeholder('Alerts', 'Telematics alerts list with dashcam events') },
+          { title: 'AI dashcam alerts', body: 'Forward collision, lane departure, pedestrian ahead, fatigue, phone use and distraction, detected on the camera itself.', screen: { src: '/screens/telematics-alerts.png', caption: 'Alerts', alt: 'ILACORE Telematics list of AI dashcam alarms on demo vehicles: forward collision warning, fatigue alarm and handheld phone call, each with a map link and a review box', width: 1176, height: 450 } },
           { title: 'Alert rules', body: 'Choose which alarms your fleet records and raises.' },
           { title: 'Emergency alarms', body: 'A crash shows as an emergency, with a full-screen alarm on the phone app.' },
         ],
@@ -132,7 +132,7 @@ export const products: Product[] = [
       {
         job: 'Act and keep a record',
         features: [
-          { title: 'Acknowledged alerts', body: 'Each alert records who acknowledged it, when and how.', screen: placeholder('Alert detail', 'Telematics alert detail showing who acknowledged it and when') },
+          { title: 'Acknowledged alerts', body: 'Each alert shows who acknowledged it, so the team knows it is handled.', screen: placeholder('Alert detail', 'Telematics alert detail showing who acknowledged it and when') },
           { title: 'Team access', body: 'Owner, manager, viewer and driver roles, limited to the vehicles or groups each person needs.' },
           { title: 'Android app', body: 'The full dashboard on a phone, with alerts as notifications. One sign-in for web and app.' },
         ],
