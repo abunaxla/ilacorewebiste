@@ -2,7 +2,6 @@
 
 import { NewTabCue } from '@/components/new-tab-cue';
 import { useActionState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { countries } from '@/content/countries';
 import { products } from '@/content/products';
 import { whatsappLink } from '@/content/site';
@@ -15,8 +14,8 @@ const input =
 const label = 'font-display text-16 font-bold text-navy';
 const err = 'mt-1 text-14 text-[#b42318]';
 
-export function DemoForm() {
-  const params = useSearchParams();
+// `preselected` comes from the page's ?product= on the server, so the form is in the first HTML and nothing shifts on load.
+export function DemoForm({ preselected }: { preselected: string | null }) {
   const [state, action, pending] = useActionState<LeadResult, FormData>(requestDemo, { status: 'idle' });
   const formRef = useRef<HTMLFormElement>(null);
   const sentRef = useRef<HTMLDivElement>(null);
@@ -53,7 +52,6 @@ export function DemoForm() {
 
   const values: FormValues = 'values' in state ? state.values : {};
   const errors = state.status === 'invalid' ? state.fieldErrors : {};
-  const preselected = params.get('product');
   const checked = (slug: string) => (Array.isArray(values.products) ? values.products.includes(slug) : preselected === slug);
   const v = (k: string) => (typeof values[k] === 'string' ? (values[k] as string) : '');
   // Remount the form when the server returns values, so defaultValue and defaultChecked apply.

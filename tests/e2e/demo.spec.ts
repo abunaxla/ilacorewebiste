@@ -59,3 +59,16 @@ test('pre-fills the product and interest intent from the URL', async ({ page }) 
   await expect(page.getByLabel('ILACORE Telematics')).toBeChecked();
   await expect(page.getByLabel('ILACORE FMS')).not.toBeChecked();
 });
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  // The server sends the heading and form, so nothing appears or shifts after load.
+  test('serves the form and the preselected product in the first HTML', async ({ page }) => {
+    await page.goto('/demo?product=telematics&intent=interest');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Register your interest');
+    await expect(page.getByLabel('Name', { exact: true })).toBeVisible();
+    await expect(page.getByLabel('ILACORE Telematics')).toBeChecked();
+    await expect(page.getByLabel('ILACORE FMS')).not.toBeChecked();
+  });
+});
