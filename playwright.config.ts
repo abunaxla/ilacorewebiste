@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 3100;
+// E2E_PORT lets the tests avoid a port another local app is already using.
+const PORT = Number(process.env.E2E_PORT) || 3100;
 
 export default defineConfig({
   testDir: 'tests/e2e',
