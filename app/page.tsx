@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { ButtonLink } from '@/components/button-link';
+import { CommonQuestions } from '@/components/common-questions';
 import { DemoSection } from '@/components/demo-section';
+import { OfflineDiagram } from '@/components/offline-diagram';
 import { HeroInstrument } from '@/components/hero-instrument/hero-instrument';
 import { ProductRow } from '@/components/product-row';
 import { comingSoonProducts, liveProducts } from '@/content/products';
@@ -41,11 +43,14 @@ export default function Home() {
       {liveProducts().map((p, i) => <ProductRow key={p.slug} product={p} mirrored={i % 2 === 1} />)}
 
       <section aria-labelledby="offline" className="border-t border-line bg-white py-16 sm:py-24">
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-          <h2 id="offline" className="text-31 sm:text-39">Works offline</h2>
-          <p className="reading mt-4 text-20 text-ink-muted">
-            Coverage drops on highways and at remote stations. The forecourt controller keeps every sale and the dashcam keeps its positions while offline, and both send them once the signal returns, so nothing recorded offline is lost.
-          </p>
+        <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">
+          <div className="min-w-0">
+            <h2 id="offline" className="text-31 sm:text-39">Works offline</h2>
+            <p className="reading mt-4 text-20 text-ink-muted">
+              Coverage drops on highways and at remote stations. The forecourt controller keeps every sale and the dashcam keeps its positions while offline, and both send them once the signal returns, so nothing recorded offline is lost.
+            </p>
+          </div>
+          <OfflineDiagram />
         </div>
       </section>
 
@@ -78,6 +83,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <CommonQuestions />
 
       <DemoSection />
     </main>

@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ButtonLink } from '@/components/button-link';
 import { DemoSection } from '@/components/demo-section';
+import { InstallChain } from '@/components/install-chain';
+import { OutcomeList } from '@/components/outcome-list';
 import { Screenshot } from '@/components/screenshot';
 import { safeJsonLd } from '@/lib/json-ld';
 import { industries } from '@/content/industries';
@@ -53,7 +55,11 @@ export default async function ProductPage({ params }: Props) {
             <p className="reading mt-4 text-16 text-white/80">{product.summary}</p>
             <div className="mt-8"><ButtonLink href={`/demo?product=${product.slug}`}>Book a demo</ButtonLink></div>
           </div>
-          <div className="min-w-0"><Screenshot screen={product.screens[0]} priority /></div>
+          <div className="min-w-0">
+            {product.screens[0]
+              ? <Screenshot screen={product.screens[0]} priority tone="dark" />
+              : <OutcomeList items={product.outcomes} tone="dark" />}
+          </div>
         </div>
       </section>
 
@@ -77,19 +83,20 @@ export default async function ProductPage({ params }: Props) {
           {product.featureGroups.map((g) => {
             const shot = g.features.find((f) => f.screen)?.screen;
             return (
-              <div key={g.job} className="mt-14 grid gap-10 lg:grid-cols-[5fr_7fr]">
-                <div className="min-w-0">
-                  <h3 className="text-25">{g.job}</h3>
-                  <dl className="mt-5 space-y-5">
+              <div key={g.job} className="mt-10 border-t border-line pt-10">
+                <h3 className="text-25">{g.job}</h3>
+                {/* With a screenshot: features beside it. Without one yet: features across the full width. */}
+                <div className={shot ? 'mt-6 grid gap-10 lg:grid-cols-[5fr_7fr]' : 'mt-6'}>
+                  <dl className={shot ? 'min-w-0 space-y-5' : 'grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-3'}>
                     {g.features.map((f) => (
-                      <div key={f.title}>
+                      <div key={f.title} className="min-w-0">
                         <dt className="font-display text-16 font-bold text-navy">{f.title}</dt>
                         <dd className="mt-1 text-16 text-ink-muted">{f.body}</dd>
                       </div>
                     ))}
                   </dl>
+                  {shot && <div className="min-w-0"><Screenshot screen={shot} sizes="(min-width: 1024px) 720px, 100vw" /></div>}
                 </div>
-                {shot && <div className="min-w-0"><Screenshot screen={shot} /></div>}
               </div>
             );
           })}
@@ -114,6 +121,7 @@ export default async function ProductPage({ params }: Props) {
           <h2 id="hardware" className="text-31 sm:text-39">What we install</h2>
           <p className="reading mt-4 text-20 text-ink">{product.hardware.body}</p>
           <p className="reading mt-3 text-16 text-ink-muted">{product.hardware.offline}</p>
+          <InstallChain steps={product.hardware.chain} />
         </div>
       </section>
 

@@ -68,7 +68,7 @@ export function HeroInstrument() {
       </div>
       <dl className="readout mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-14 sm:grid-cols-4">
         <div className="min-w-0"><dt className="text-white/70">TANK</dt><dd data-testid="tank-litres" className="text-20">{fmt(s.tankLitres)} L</dd></div>
-        <div className="min-w-0"><dt className="text-white/70">DELIVERED</dt><dd className="text-20">{fmt(s.delivered)} L</dd></div>
+        <div className="min-w-0"><dt className="text-white/70">DELIVERY</dt><dd className="text-20">{s.delivered > 0 ? `${fmt(s.delivered)} L` : 'En route'}</dd></div>
         <div className="min-w-0"><dt className="text-white/70">SOLD</dt><dd className="text-20">{fmt(s.sold)} L</dd></div>
         <div className="min-w-0"><dt className="text-white/70">TRUCK</dt><dd className="text-20 text-gold">{s.kmToGo > 0 ? `${fmt(s.kmToGo)} km to go` : 'Arrived'}</dd></div>
       </dl>
