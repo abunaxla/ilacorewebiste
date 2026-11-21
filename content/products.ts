@@ -109,7 +109,7 @@ export const products: Product[] = [
       {
         job: 'See the fleet',
         features: [
-          { title: 'Live map', body: 'Every vehicle with its position, speed and ignition, and the trail it leaves as it moves.', screen: placeholder('Live map', 'Telematics live map showing vehicles and their status') },
+          { title: 'Live map', body: 'Every vehicle with its position, speed and ignition, and the trail it leaves as it moves.', screen: { src: '/screens/telematics-live-map.png', caption: 'Live map', alt: 'ILACORE Telematics live map of a four-vehicle demo fleet in Kisumu, with driving, idle and offline filters and the speed of each vehicle', width: 1440, height: 900 } },
           { title: 'Trip replay', body: 'Pick a vehicle and a time range, then play the route back with the alarms along the way.' },
           { title: 'Geofences', body: 'Draw circles or shapes on the map and get an alert when a vehicle enters or leaves. Nothing to program on the device.' },
         ],
@@ -149,7 +149,7 @@ export const products: Product[] = [
       body: 'An AI dashcam in each vehicle, with road-facing and driver-facing cameras, GPS and 4G. ILACORE installs and configures it.',
       offline: 'Out of coverage, the dashcam stores its positions and sends them when the signal returns, so the trip stays complete.',
     },
-    screens: [placeholder('Telematics overview', 'ILACORE Telematics live map and alerts')],
+    screens: [{ src: '/screens/telematics-live-map.png', caption: 'Live map', alt: 'ILACORE Telematics live map of a four-vehicle demo fleet in Kisumu, with driving, idle and offline filters and the speed of each vehicle', width: 1440, height: 900 }],
     industries: ['fleet-depots', 'transport'],
     seoDescription: 'ILACORE Telematics shows every vehicle on a live map, with trip replay, geofences, live dashcam video and AI alerts for fatigue, phone use and collisions.',
   },
