@@ -48,14 +48,14 @@ export const products: Product[] = [
         features: [
           { title: 'Sales dashboard', body: "Today's sales, litres and transactions, compared with the same time yesterday and refreshed every 30 seconds." },
           { title: 'Pumps and prices', body: 'Every pump and nozzle at the station, live, with the price on each.' },
-          { title: 'Tank levels', body: 'The level and stock in each tank, with a warning when one falls below 15%.' },
+          { title: 'Tank levels', body: 'The level and stock in each tank, with a warning when one falls below 15%.', screen: { src: '/screens/fms-tanks.png', caption: 'Tank levels', alt: 'ILACORE FMS tank page: a petrol tank at 7.7 percent with a low stock warning and a diesel tank at 17.6 percent, each with litres in stock and room left', width: 1032, height: 432 } },
         ],
       },
       {
         job: 'Close every shift',
         features: [
           { title: 'Shifts and day close', body: 'Each shift in detail, and a printable day-close sheet for every station and date.' },
-          { title: 'Sales and reports', body: 'Every pump sale with credit notes, plus sales, product and fleet reports.' },
+          { title: 'Sales and reports', body: 'Every pump sale with credit notes, plus sales, product and fleet reports.', screen: { src: '/screens/fms-sales-report.png', caption: 'Sales per product', alt: 'ILACORE FMS sales report: litres, price and gross sales for diesel and petrol on each day, with daily totals and buttons to download or email the report', width: 1032, height: 688 } },
         ],
       },
       {
@@ -91,7 +91,7 @@ export const products: Product[] = [
         { icon: 'dashboard', label: 'Dashboard and handheld', detail: 'Where your team sees and works with them.' },
       ],
     },
-    screens: [],
+    screens: [{ src: '/screens/fms-daily-summary.png', caption: 'A day at one station', alt: 'ILACORE FMS daily summary: a bar chart of litres sold in each hour, with tables of litres and revenue by grade and by pump', width: 1032, height: 446 }],
     industries: ['fuel-stations', 'fleet-depots', 'oil-marketing'],
     seoDescription: 'ILACORE FMS shows live pump sales, tank levels and shifts for fuel stations, with a handheld POS, mobile payments and credit customers.',
   },
