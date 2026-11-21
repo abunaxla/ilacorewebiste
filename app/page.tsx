@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { title: 'Install', body: 'Our team fits the gateway, probes, trackers or dashcams on site.' },
-  { title: 'Connect', body: 'Devices connect over mobile data and start sending readings.' },
-  { title: 'Dashboards', body: 'Your team signs in and sees live stock, vehicles and history.' },
-  { title: 'Alerts', body: 'You choose who is told about what, and when.' },
+  { title: 'Install', body: 'Our team fits the forecourt controller, tank probes or dashcams on site.' },
+  { title: 'Connect', body: 'Devices connect over the internet or mobile data and start sending readings.' },
+  { title: 'Dashboards', body: 'Your team signs in and sees live sales, stock, vehicles and history.' },
+  { title: 'Alerts', body: 'You choose which alarms matter and who can see them.' },
 ];
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
           <div className="min-w-0">
             <h1 className="text-39 text-white sm:text-49 lg:text-61">Account for every litre and every kilometre.</h1>
             <p className="reading mt-6 text-20 text-white/85">
-              Live tank, pump and vehicle data for fuel and fleet operators across Africa and the Middle East. See losses as they happen, not at month end.
+              Every pump sale, tank level and vehicle, live, for fuel and fleet operators across Africa and the Middle East.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/demo">Book a demo</ButtonLink>
@@ -44,7 +44,7 @@ export default function Home() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
           <h2 id="offline" className="text-31 sm:text-39">Works offline</h2>
           <p className="reading mt-4 text-20 text-ink-muted">
-            Coverage drops on highways and at remote depots. Gateways and in-vehicle devices keep recording while offline and send everything once the signal returns, so readings recorded offline still reach your dashboard.
+            Coverage drops on highways and at remote stations. The forecourt controller keeps every sale and the dashcam keeps its positions while offline, and both send them once the signal returns, so nothing recorded offline is lost.
           </p>
         </div>
       </section>

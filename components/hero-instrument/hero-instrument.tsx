@@ -70,7 +70,7 @@ export function HeroInstrument() {
         <div className="min-w-0"><dt className="text-white/70">TANK</dt><dd data-testid="tank-litres" className="text-20">{fmt(s.tankLitres)} L</dd></div>
         <div className="min-w-0"><dt className="text-white/70">DELIVERED</dt><dd className="text-20">{fmt(s.delivered)} L</dd></div>
         <div className="min-w-0"><dt className="text-white/70">SOLD</dt><dd className="text-20">{fmt(s.sold)} L</dd></div>
-        <div className="min-w-0"><dt className="text-white/70">UNACCOUNTED</dt><dd className="text-20 text-gold">{fmt(s.unaccounted)} L</dd></div>
+        <div className="min-w-0"><dt className="text-white/70">TRUCK</dt><dd className="text-20 text-gold">{s.kmToGo > 0 ? `${fmt(s.kmToGo)} km to go` : 'Arrived'}</dd></div>
       </dl>
       {!reduced && (
         <button
@@ -84,8 +84,8 @@ export function HeroInstrument() {
       )}
       <figcaption className="sr-only">
         Illustration: a delivery truck drives from the Mombasa depot to Kampala station 04 while the station&apos;s diesel
-        tank is sold down. The instrument reconciles litres delivered against litres sold and the tank level, and
-        flags the small difference, for example 140 litres, as unaccounted.
+        tank is sold down. The instrument shows the tank level, litres sold and litres delivered, and how far the
+        tracked truck has left to go.
       </figcaption>
     </figure>
   );

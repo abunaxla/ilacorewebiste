@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CYCLE_MS, STATIC_PHASE, TANK_CAPACITY_L, instrumentState, phaseAt, resumeOrigin } from '@/components/hero-instrument/model';
+import { CYCLE_MS, ROUTE_KM, STATIC_PHASE, TANK_CAPACITY_L, instrumentState, phaseAt, resumeOrigin } from '@/components/hero-instrument/model';
 
 describe('instrumentState', () => {
   it('starts with the tank at 24,418 L and the truck at the depot', () => {
@@ -25,29 +25,23 @@ describe('instrumentState', () => {
     }
   });
 
-  it('keeps unaccounted small, non-negative and non-decreasing through the loop', () => {
-    let previous = 0;
-    for (let i = 0; i < 1000; i++) {
-      const { unaccounted } = instrumentState(i / 1000);
-      expect(unaccounted).toBeGreaterThanOrEqual(0);
-      expect(unaccounted).toBeLessThanOrEqual(140);
-      expect(unaccounted).toBeGreaterThanOrEqual(previous);
-      previous = unaccounted;
+  it('counts the truck down from the full route to zero', () => {
+    expect(instrumentState(0).kmToGo).toBe(ROUTE_KM);
+    let previous = ROUTE_KM;
+    for (let i = 0; i < 850; i++) {
+      const { kmToGo } = instrumentState(i / 1000);
+      expect(kmToGo).toBeLessThanOrEqual(previous);
+      previous = kmToGo;
     }
-  });
-
-  it('settles unaccounted at 140 L once the truck has arrived', () => {
-    expect(instrumentState(0.85).unaccounted).toBe(140);
-    expect(instrumentState(0.9).unaccounted).toBe(140);
-    expect(instrumentState(0.9999).unaccounted).toBe(140);
+    expect(instrumentState(0.9).kmToGo).toBe(0);
   });
 
   it('ends the loop where it started so it repeats without a jump', () => {
     expect(Math.abs(instrumentState(0.9999).tankLitres - instrumentState(0).tankLitres)).toBeLessThan(50);
   });
 
-  it('shows a non-zero unaccounted figure in the static frame', () => {
-    expect(instrumentState(STATIC_PHASE).unaccounted).toBeGreaterThan(0);
+  it('shows the truck still on the road in the static frame', () => {
+    expect(instrumentState(STATIC_PHASE).kmToGo).toBeGreaterThan(0);
   });
 
   it('wraps phases outside [0, 1)', () => {

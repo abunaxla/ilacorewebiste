@@ -3,12 +3,16 @@ import { expect, test } from '@playwright/test';
 test('FMS page has its promise, sections and a pre-selected demo link', async ({ page }) => {
   await page.goto('/fms');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ILACORE FMS');
-  await expect(page.getByText("Know what's in every tank and where every litre went.")).toBeVisible();
+  await expect(page.getByText('See every pump, tank and shift at your stations, as it happens.')).toBeVisible();
   await expect(page.locator('main').getByRole('link', { name: 'Book a demo' }).first()).toHaveAttribute('href', '/demo?product=fms');
   for (const h of ['What it stops', 'What it does', 'What we install', "Who it's for"]) {
     await expect(page.getByRole('heading', { level: 2, name: h })).toBeVisible();
   }
-  await expect(page.getByRole('region', { name: 'Coming soon' })).toHaveCount(0);
+  // Built but not live: these must sit in Coming soon, never in the live feature list.
+  const soon = page.getByRole('region', { name: 'Coming soon' });
+  await expect(soon).toContainText('Accounting');
+  await expect(soon).toContainText('KRA eTIMS invoices');
+  await expect(soon).toContainText('Missing-sale and loss alerts');
 });
 
 test('Telematics labels the driver companion and crash SOS as coming soon', async ({ page }) => {

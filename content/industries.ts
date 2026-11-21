@@ -8,22 +8,22 @@ export const industries: Industry[] = [
   {
     slug: 'fuel-stations',
     name: 'Fuel stations',
-    problem: 'Dip readings, pump totals and delivery notes rarely agree, and nobody can say where the difference went.',
-    answer: 'ILACORE FMS reads every tank and pump continuously and reconciles them against each delivery.',
+    problem: 'Dip readings, pump totals and cash are checked by hand, at the end of the shift, if at all.',
+    answer: 'ILACORE FMS gives you live sales, tank levels and shift close for every pump, with a handheld POS for attendants.',
     products: ['fms'],
   },
   {
     slug: 'fleet-depots',
     name: 'Fleet depots and private tanks',
     problem: 'Fuel leaves the depot tank, but it is hard to match each litre to a vehicle and a trip.',
-    answer: 'FMS tracks the tank and every draw from it. Telematics shows where each vehicle went with that fuel.',
+    answer: 'FMS shows the tank level and every pump sale. Telematics shows where each vehicle went, and how it was driven.',
     products: ['fms', 'telematics'],
   },
   {
     slug: 'oil-marketing',
     name: 'Oil marketing companies',
-    problem: 'Head office sees station stock days late, after losses have already happened.',
-    answer: 'The FMS network view puts every station, tank and gateway on one screen as readings arrive.',
+    problem: 'Head office sees station sales and stock days late, when it is too late to act.',
+    answer: "ILACORE FMS puts every station's sales and stock under one account, as they happen.",
     products: ['fms'],
   },
   {
