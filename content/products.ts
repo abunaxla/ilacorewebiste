@@ -12,6 +12,8 @@ export type FeatureGroup = { job: string; features: Feature[] };
 export type Product = {
   slug: ProductSlug;
   name: string;
+  /** Who the product is for, in a few words. Each product names its own audience; never combine them. */
+  audience: string;
   status: ProductStatus;
   promise: string;
   summary: string;
@@ -30,6 +32,7 @@ export const products: Product[] = [
   {
     slug: 'fms',
     name: 'ILACORE FMS',
+    audience: 'For fuel stations',
     status: 'live',
     promise: 'See every pump, tank and shift at your stations, as it happens.',
     summary: 'A fuel management system for stations and station networks. It connects to the forecourt controller, so every pump sale and tank reading reaches your dashboard as it happens.',
@@ -100,6 +103,7 @@ export const products: Product[] = [
   {
     slug: 'telematics',
     name: 'ILACORE Telematics',
+    audience: 'For vehicle fleets',
     status: 'live',
     promise: 'See every vehicle, and every risk on the road, as it happens.',
     summary: 'Live vehicle tracking with an AI dashcam in every cab, so you can see where vehicles are, how they are driven and what the camera sees.',
@@ -171,6 +175,7 @@ export const products: Product[] = [
   {
     slug: 'lpg',
     name: 'ILACORE LPG',
+    audience: 'For LPG distributors',
     status: 'coming-soon',
     promise: 'Know where every gas cylinder is, and whether it was paid for.',
     summary: 'In development for LPG distributors: an RFID tag on every cylinder, deliveries confirmed by the shop, a driver handheld that works without signal, and every full cylinder matched to a payment. Register your interest to hear first.',

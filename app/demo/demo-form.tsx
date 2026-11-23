@@ -10,8 +10,8 @@ import type { FormValues, LeadResult } from '@/lib/lead';
 import { requestDemo } from './actions';
 
 const input =
-  'mt-1 block w-full min-h-11 rounded-control border border-ink-muted bg-white px-3 text-16 text-ink aria-[invalid=true]:border-[#b42318]';
-const label = 'font-display text-16 font-bold text-navy';
+  'mt-2 block w-full min-h-12 rounded-xl border border-ink/20 bg-white px-4 text-16 text-ink transition-colors placeholder:text-ink-muted/70 hover:border-ink/40 focus:border-ink aria-[invalid=true]:border-[#b42318]';
+const label = 'font-display text-16 font-medium text-ink';
 const err = 'mt-1 text-14 text-[#b42318]';
 
 // `preselected` comes from the page's ?product= on the server, so the form is in the first HTML and nothing shifts on load.
@@ -34,14 +34,14 @@ export function DemoForm({ preselected }: { preselected: string | null }) {
 
   if (state.status === 'sent') {
     return (
-      <div ref={sentRef} tabIndex={-1} role="status" className="rounded-panel border border-line bg-white p-6">
-        <h2 className="text-25">Thank you. Your request was sent.</h2>
+      <div ref={sentRef} tabIndex={-1} role="status" className="p-2">
+        <h2 className="text-[1.75rem] tracking-[-0.03em]">Thank you. Your request was sent.</h2>
         <p className="mt-2 text-16 text-ink-muted">We&apos;ll contact you within one working day.</p>
         <a
           href={whatsappLink('Hello ILACORE, I just requested a demo.')}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 inline-flex min-h-11 items-center rounded-control bg-navy px-5 font-display font-bold text-white"
+          className="mt-5 inline-flex min-h-11 items-center rounded-full bg-ink px-5 font-display font-medium text-white"
         >
           Chat on WhatsApp
           <NewTabCue />
@@ -60,17 +60,17 @@ export function DemoForm({ preselected }: { preselected: string | null }) {
   return (
     <form ref={formRef} key={formKey} action={action} noValidate className="relative min-w-0 space-y-6">
       {state.status === 'failed' && (
-        <p ref={alertRef} tabIndex={-1} role="alert" className="rounded-panel border border-[#b42318] bg-white p-4 text-16 text-ink">
+        <p ref={alertRef} tabIndex={-1} role="alert" className="rounded-xl border border-[#b42318]/40 bg-[#fef3f2] p-4 text-16 text-ink">
           Your request didn&apos;t send. Message us on WhatsApp or try again.{' '}
-          <a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
+          <a className="font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
             Chat on WhatsApp
           <NewTabCue /></a>
         </p>
       )}
       {state.status === 'rate-limited' && (
-        <p ref={alertRef} tabIndex={-1} role="alert" className="rounded-panel border border-[#b42318] bg-white p-4 text-16 text-ink">
+        <p ref={alertRef} tabIndex={-1} role="alert" className="rounded-xl border border-[#b42318]/40 bg-[#fef3f2] p-4 text-16 text-ink">
           Too many attempts. Try again in a few minutes, or message us on WhatsApp.{' '}
-          <a className="font-bold text-navy underline" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
+          <a className="font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink" href={whatsappLink('Hello ILACORE, I would like a demo.')} target="_blank" rel="noopener noreferrer">
             Chat on WhatsApp
           <NewTabCue /></a>
         </p>
@@ -145,7 +145,7 @@ export function DemoForm({ preselected }: { preselected: string | null }) {
                 value={p.slug}
                 defaultChecked={checked(p.slug)}
                 aria-invalid={i === 0 && !!errors.products ? true : undefined}
-                className="h-5 w-5 accent-navy"
+                className="h-5 w-5 accent-ink"
               />
               {p.name}
               {p.status === 'coming-soon' && <span className="text-14 text-ink-muted">(coming soon)</span>}
@@ -180,7 +180,7 @@ export function DemoForm({ preselected }: { preselected: string | null }) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-11 items-center rounded-control bg-gold px-6 font-display text-16 font-bold text-navy-deep disabled:opacity-60"
+        className="inline-flex min-h-11 items-center rounded-full bg-ink px-6 font-display text-16 font-medium text-white disabled:opacity-60"
       >
         {pending ? 'Sending…' : 'Request a demo'}
       </button>

@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('home tells the story in order', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Account for every litre and every kilometre.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bring visibility to your key operations.');
   const h2s = await page.locator('main h2').allTextContents();
-  const order = ['ILACORE FMS', 'ILACORE Telematics', 'Works offline', 'How it starts', 'Coming next', 'Common questions', 'Book a demo'];
+  const order = ['pump, tank and shift', 'every vehicle', 'nothing is lost', 'first alert', 'ILACORE LPG', 'Common questions', 'Book a demo'];
   const idx = order.map((t) => h2s.findIndex((h) => h.includes(t)));
   expect(idx.every((i) => i >= 0)).toBe(true);
   expect([...idx].sort((a, b) => a - b)).toEqual(idx);

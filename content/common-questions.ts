@@ -17,7 +17,7 @@ export const commonQuestions: CommonQuestion[] = [
   },
   {
     question: 'What if the internet or mobile signal drops?',
-    answer: 'Nothing recorded is lost. The forecourt controller keeps every sale and the dashcam keeps its positions, and both send them once the connection is back.',
+    answer: 'Nothing recorded is lost. In ILACORE FMS, the forecourt controller keeps every sale and sends them once the internet is back. In ILACORE Telematics, the dashcam keeps its positions and sends them once the mobile signal returns.',
   },
   {
     question: 'How does my team use it?',
@@ -29,7 +29,7 @@ export const commonQuestions: CommonQuestion[] = [
   },
   {
     question: 'Where do you work?',
-    answer: 'We work with fuel and fleet operators across Africa and the Middle East. Tell us where you operate when you book a demo.',
+    answer: 'We work with fuel station operators and vehicle fleets across Africa and the Middle East. Tell us where you operate when you book a demo.',
   },
   {
     question: 'Is ILACORE LPG available yet?',

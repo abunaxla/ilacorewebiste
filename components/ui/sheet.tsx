@@ -27,7 +27,7 @@ function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
   return (
     <SheetPrimitive.Backdrop
       data-slot="sheet-overlay"
-      className={cn("fixed inset-0 z-50 bg-navy-deep/60", className)}
+      className={cn("fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm", className)}
       {...props}
     />
   )
@@ -60,7 +60,7 @@ function SheetContent({
           <SheetPrimitive.Close
             data-slot="sheet-close"
             aria-label="Close menu"
-            className="absolute right-3 top-3 inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-navy"
+            className="absolute right-3 top-3 inline-flex min-h-11 min-w-11 items-center justify-center rounded-control text-ink"
           >
             <XIcon aria-hidden="true" width={20} height={20} />
           </SheetPrimitive.Close>

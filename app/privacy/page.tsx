@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 export default function Privacy() {
   return (
     <main id="main" tabIndex={-1}>
-      <PageHero title="Privacy policy" />
-      <div className="mx-auto max-w-[1280px] px-4 py-14 sm:px-6">
-        <div className="reading space-y-4 text-16 [&_h2]:mt-8 [&_h2]:text-25">
+      <PageHero eyebrow="Legal" title="Privacy policy" />
+      <div className="mx-auto max-w-[1240px] px-4 pb-12 sm:px-6 sm:pb-16">
+        <div className="reading space-y-4 rounded-[var(--radius-panel)] border border-ink/[0.06] bg-white p-7 text-16 leading-relaxed text-ink sm:p-12 [&_h2]:mt-10 [&_h2]:text-[1.5rem] [&_h2]:tracking-[-0.025em] [&_h2:first-of-type]:mt-8">
           <p>This policy explains what {site.legalEntity} collects through this website and why.</p>
           <h2>What we collect</h2>
           <p>Only what you type into the demo form: your name, company, country, phone or WhatsApp number, the products you are interested in and, if you choose, your fleet or station size.</p>
@@ -28,7 +28,7 @@ export default function Privacy() {
           <h2>How long we keep it</h2>
           <p>We keep your request while we are discussing a demo or a contract with you, and delete it when you ask.</p>
           <h2>Your rights</h2>
-          <p>To see, correct or delete what we hold about you, email <a className="text-navy underline" href={`mailto:${site.infoEmail}`}>{site.infoEmail}</a>.</p>
+          <p>To see, correct or delete what we hold about you, email <a className="font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink" href={`mailto:${site.infoEmail}`}>{site.infoEmail}</a>.</p>
         </div>
       </div>
     </main>

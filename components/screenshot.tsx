@@ -15,7 +15,7 @@ export function Screenshot({ screen, priority = false, sizes = '(min-width: 1024
       <button
         type="button"
         onClick={() => dialog.current?.showModal()}
-        className="relative block w-full cursor-zoom-in overflow-hidden rounded-panel border border-line bg-white"
+        className="float-card relative block w-full cursor-zoom-in"
       >
         <Image
           src={screen.src}
@@ -29,7 +29,7 @@ export function Screenshot({ screen, priority = false, sizes = '(min-width: 1024
         <span className="sr-only">. Enlarge this screenshot.</span>
         <span
           aria-hidden="true"
-          className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-control bg-navy-deep text-white"
+          className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-ink/80 text-white backdrop-blur"
         >
           <Maximize2 size={16} />
         </span>
@@ -41,14 +41,14 @@ export function Screenshot({ screen, priority = false, sizes = '(min-width: 1024
         ref={dialog}
         aria-label={screen.caption}
         onClick={(e) => { if (e.target === e.currentTarget) e.currentTarget.close(); }}
-        className="m-auto max-h-[92vh] w-[min(96vw,1440px)] max-w-none overflow-hidden rounded-panel bg-white p-0 text-ink backdrop:bg-navy-deep/80"
+        className="m-auto max-h-[92vh] w-[min(96vw,1440px)] max-w-none overflow-hidden rounded-[20px] bg-white p-0 text-ink backdrop:bg-ink/60 backdrop:backdrop-blur-sm"
       >
-        <div className="flex items-center justify-between gap-4 border-b border-line px-4 py-2">
-          <p className="font-display text-16 font-bold text-navy">{screen.caption}</p>
+        <div className="flex items-center justify-between gap-4 border-b border-ink/[0.06] px-4 py-2">
+          <p className="font-display text-16 font-medium text-ink">{screen.caption}</p>
           <button
             type="button"
             onClick={() => dialog.current?.close()}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control px-3 text-14 text-navy hover:bg-paper"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-full px-3 text-14 text-ink hover:bg-paper"
           >
             <X size={18} aria-hidden="true" />
             Close
