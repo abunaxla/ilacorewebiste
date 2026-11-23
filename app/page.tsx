@@ -55,28 +55,29 @@ export default function Home() {
           </div>
 
           {/* One window per product, each labelled, never layered over each other. */}
-          <div className="mx-auto mt-16 grid max-w-[1180px] translate-y-4 gap-5 px-4 sm:mt-20 sm:translate-y-6 sm:px-8 md:grid-cols-2">
+          {/* On a phone the windows are taller, so each screen shows at about twice the scale and stays readable. */}
+          <div className="mx-auto mt-16 grid max-w-[1180px] translate-y-4 gap-6 px-3 sm:mt-20 sm:translate-y-6 sm:gap-5 sm:px-8 md:grid-cols-2">
             <figure className="min-w-0">
               <figcaption className="mb-3"><Eyebrow tone="dark">{fms.name}, {fms.audience.toLowerCase()}</Eyebrow></figcaption>
               <BrowserFrame
-                crop="aspect-[3/2]"
+                crop="aspect-[4/5] sm:aspect-[3/2]"
                 src="/screens/fms-sales-report.png"
                 alt="ILACORE FMS sales report: litres, price and gross sales of diesel and petrol for each day, with daily totals"
                 width={1032}
                 height={688}
-                sizes="(min-width: 768px) 560px, 100vw"
+                sizes="(min-width: 768px) 560px, 200vw"
                 priority
               />
             </figure>
             <figure className="min-w-0">
               <figcaption className="mb-3"><Eyebrow tone="dark">{telematics.name}, {telematics.audience.toLowerCase()}</Eyebrow></figcaption>
               <BrowserFrame
-                crop="aspect-[3/2]"
+                crop="aspect-[4/5] sm:aspect-[3/2]"
                 src="/screens/telematics-live-map.png"
                 alt="ILACORE Telematics live map of a four-vehicle demo fleet in Kisumu, with each vehicle's status and speed"
                 width={1440}
                 height={900}
-                sizes="(min-width: 768px) 560px, 100vw"
+                sizes="(min-width: 768px) 560px, 200vw"
                 priority
               />
             </figure>
