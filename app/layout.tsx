@@ -12,8 +12,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: 'ILACORE', template: '%s | ILACORE' },
-  description: 'Fuel management and fleet telematics for operators across Africa and the Middle East.',
-  openGraph: { type: 'website', siteName: 'ILACORE', locale: 'en' },
+  description: 'ILACORE builds, installs and supports live dashboards for key operations across Africa and the Middle East.',
+  openGraph: { type: 'website', siteName: 'ILACORE', locale: 'en_US' },
   twitter: { card: 'summary_large_image' },
 };
 

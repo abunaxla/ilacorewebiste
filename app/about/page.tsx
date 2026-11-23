@@ -7,7 +7,7 @@ import { site, telLink, whatsappLink } from '@/content/site';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'ILACORE builds ILACORE FMS for fuel stations and ILACORE Telematics for vehicle fleets, across Africa and the Middle East.',
+  description: 'ILACORE builds, installs and supports live dashboards across Africa and the Middle East. ILACORE FMS is for fuel stations. ILACORE Telematics is for vehicle fleets.',
   alternates: { canonical: '/about' },
 };
 
@@ -20,7 +20,7 @@ export default function About() {
       <PageHero
         eyebrow="About"
         title="About ILACORE"
-        lead={`ILACORE builds systems for fuel stations and for vehicle fleets across ${site.regions}.`}
+        lead={`ILACORE builds, installs and supports live dashboards for key operations across ${site.regions}.`}
       />
       <div className="mx-auto grid max-w-[1240px] gap-4 px-4 pb-12 sm:px-6 sm:pb-16 lg:grid-cols-[7fr_5fr]">
         <div className="min-w-0 rounded-[var(--radius-panel)] border border-ink/[0.06] bg-white p-7 sm:p-10">

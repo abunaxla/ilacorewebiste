@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { ButtonLink } from '@/components/button-link';
+import { CommonQuestions } from '@/components/common-questions';
 import { DemoSection } from '@/components/demo-section';
 import { InstallChain } from '@/components/install-chain';
 import { OutcomeList } from '@/components/outcome-list';
@@ -25,7 +26,7 @@ type Props = { params: Promise<{ product: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = getProduct((await params).product);
   if (!p || p.status !== 'live') return {};
-  return { title: p.name, description: p.seoDescription, alternates: { canonical: `/${p.slug}` } };
+  return { title: { absolute: p.seoTitle }, description: p.seoDescription, alternates: { canonical: `/${p.slug}` } };
 }
 
 const container = 'mx-auto max-w-[1240px] px-4 sm:px-6';
@@ -56,8 +57,13 @@ export default async function ProductPage({ params }: Props) {
           <div className={`${container} grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[5fr_7fr]`}>
             <div className="min-w-0">
               <Eyebrow tone="dark">{product.audience}</Eyebrow>
-              <h1 className="mt-6 text-[2.75rem] text-white sm:text-[4rem]">{product.name}</h1>
-              <p className="reading mt-5 text-[1.375rem] leading-snug text-white/85">{product.promise}</p>
+              <h1 className="mt-6 text-[2.75rem] text-white sm:text-[4rem]">
+                {product.name}
+                <span className="mt-3 block text-[1.375rem] font-medium leading-snug tracking-[-0.02em] text-white/85 sm:text-[1.625rem]">
+                  {product.descriptor}
+                </span>
+              </h1>
+              <p className="reading mt-5 text-[1.125rem] leading-snug text-white/75">{product.promise}</p>
               <p className="reading mt-4 text-16 text-white/65">{product.summary}</p>
               <div className="mt-8">
                 <ButtonLink href={`/demo?product=${product.slug}`} variant="light">Book a demo</ButtonLink>
@@ -179,6 +185,8 @@ export default async function ProductPage({ params }: Props) {
           ))}
         </ul>
       </section>
+
+      {product.faq.length > 0 && <CommonQuestions items={product.faq} heading={`Questions about ${product.name}`} />}
 
       <DemoSection product={product.slug} />
     </main>

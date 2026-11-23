@@ -7,7 +7,7 @@ import { products } from '@/content/products';
 
 export const metadata: Metadata = {
   title: 'Solutions',
-  description: 'ILACORE solutions: FMS for fuel stations and Telematics for vehicle fleets today, LPG next.',
+  description: 'ILACORE FMS is a petrol station management system. ILACORE Telematics is fleet tracking with AI dashcams. ILACORE LPG is in development.',
   alternates: { canonical: '/solutions' },
 };
 

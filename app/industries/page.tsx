@@ -8,7 +8,7 @@ import { getProduct } from '@/content/products';
 
 export const metadata: Metadata = {
   title: 'Industries',
-  description: 'How fuel stations, fleet depots, oil marketing companies and transport operators use ILACORE.',
+  description: 'Who uses ILACORE, the problem each industry brings to us, and which ILACORE product answers it.',
   alternates: { canonical: '/industries' },
 };
 

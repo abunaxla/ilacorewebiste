@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('FMS page has its promise, sections and a pre-selected demo link', async ({ page }) => {
   await page.goto('/fms');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ILACORE FMS');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('ILACORE FMS');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Petrol station management system');
+  await expect(page).toHaveTitle('Petrol Station Management System | ILACORE FMS');
   await expect(page.getByText('See every pump, tank and shift at your stations, as it happens.')).toBeVisible();
   await expect(page.locator('main').getByRole('link', { name: 'Book a demo' }).first()).toHaveAttribute('href', '/demo?product=fms');
   for (const h of ['What it stops', 'What it does', 'What we install', "Who it's for"]) {
@@ -30,11 +32,11 @@ test('Telematics labels the driver companion and crash SOS as coming soon', asyn
 
 test('product pages emit Product JSON-LD and link to industries', async ({ page }) => {
   await page.goto('/fms');
-  const raw = (await page.locator('main script[type="application/ld+json"]').textContent()) ?? '{}';
+  const blocks = await page.locator('main script[type="application/ld+json"]').allTextContents();
   // Page content has no `<`, so this guards the output shape only; the escaping itself is unit-tested in json-ld.test.ts.
-  expect(raw).not.toContain('<');
-  const ld = JSON.parse(raw);
-  expect(ld['@type']).toBe('Product');
+  for (const b of blocks) expect(b).not.toContain('<');
+  const ld = blocks.map((b) => JSON.parse(b)).find((x) => x['@type'] === 'Product');
+  expect(ld).toBeTruthy();
   expect(ld.name).toBe('ILACORE FMS');
   await expect(page.locator('main a[href^="/industries#"]').first()).toBeVisible();
 });
@@ -54,4 +56,25 @@ test('coming-soon and unknown products are 404', async ({ page }) => {
     expect(res?.status()).toBe(404);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText("This page doesn't exist.");
   }
+});
+
+test('each product page answers its own questions, with FAQ structured data', async ({ page }) => {
+  for (const [path, name, q] of [
+    ['/fms', 'ILACORE FMS', 'Does ILACORE FMS issue KRA eTIMS invoices?'],
+    ['/telematics', 'ILACORE Telematics', 'How is an AI dashcam different from a GPS tracker?'],
+  ]) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 2, name: `Questions about ${name}` })).toBeVisible();
+    await expect(page.getByText(q)).toBeVisible();
+    const blocks = await page.locator('main script[type="application/ld+json"]').allTextContents();
+    const faq = blocks.map((b) => JSON.parse(b)).find((x) => x['@type'] === 'FAQPage');
+    expect(faq.mainEntity.some((e: { name: string }) => e.name === q)).toBe(true);
+  }
+});
+
+test('the depot card stays on the FMS page only', async ({ page }) => {
+  await page.goto('/telematics');
+  await expect(page.locator('main a[href="/industries#fleet-depots"]')).toHaveCount(0);
+  await page.goto('/fms');
+  await expect(page.locator('main a[href="/industries#fleet-depots"]')).toHaveCount(1);
 });

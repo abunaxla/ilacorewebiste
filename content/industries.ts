@@ -15,9 +15,9 @@ export const industries: Industry[] = [
   {
     slug: 'fleet-depots',
     name: 'Fleet depots and private tanks',
-    problem: 'Fuel leaves the depot tank, but it is hard to match each litre to a vehicle and a trip.',
-    answer: 'FMS shows the tank level and every pump sale. Telematics shows where each vehicle went, and how it was driven.',
-    products: ['fms', 'telematics'],
+    problem: 'Fuel leaves the depot tank, but it is hard to match each litre to a vehicle.',
+    answer: 'ILACORE FMS shows the depot tank level and every pump sale, with credit accounts and fleet reports.',
+    products: ['fms'],
   },
   {
     slug: 'oil-marketing',

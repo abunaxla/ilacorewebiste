@@ -13,7 +13,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-[1240px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-[2fr_1fr_1fr_1fr]">
         <div>
           <Logo className="h-8 w-auto" />
-          <p className="mt-4 max-w-xs text-14 text-ink-muted">Software for fuel stations and vehicle fleets across {site.regions}.</p>
+          <p className="mt-4 max-w-xs text-14 text-ink-muted">Live dashboards for your key operations, across {site.regions}.</p>
         </div>
         <nav aria-label="Products">
           <h2 className={heading}>Products</h2>

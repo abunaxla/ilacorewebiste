@@ -8,6 +8,7 @@ export type ChainStep = { icon: ChainIcon; label: string; detail: string };
 export type HardwarePhoto = { src: string; alt: string; caption: string; width: number; height: number };
 export type Feature = { title: string; body: string; screen?: Screen };
 export type FeatureGroup = { job: string; features: Feature[] };
+export type Question = { question: string; answer: string };
 
 export type Product = {
   slug: ProductSlug;
@@ -25,6 +26,12 @@ export type Product = {
   screens: Screen[];
   industries: IndustrySlug[];
   seoDescription: string;
+  /** The full page title, written around what buyers search for. */
+  seoTitle: string;
+  /** What the product is, in the words buyers search with. Shown under the name in the page heading. */
+  descriptor: string;
+  /** Questions about this product only. Answers state only what is live today. */
+  faq: Question[];
 };
 
 
@@ -98,7 +105,17 @@ export const products: Product[] = [
     },
     screens: [{ src: '/screens/fms-daily-summary.png', caption: 'A day at one station', alt: 'ILACORE FMS daily summary: a bar chart of litres sold in each hour, with tables of litres and revenue by grade and by pump', width: 1032, height: 446 }],
     industries: ['fuel-stations', 'fleet-depots', 'oil-marketing'],
-    seoDescription: 'ILACORE FMS shows live pump sales, tank levels and shifts for fuel stations, with a handheld POS, mobile payments and credit customers.',
+    seoDescription: 'ILACORE FMS is a petrol station management system: live pump sales, tank levels and shift close, with a handheld POS and credit customers.',
+    seoTitle: 'Petrol Station Management System | ILACORE FMS',
+    descriptor: 'Petrol station management system',
+    faq: [
+      { question: 'What does ILACORE FMS connect to at the station?', answer: 'A forecourt controller that ILACORE installs on site. It reads every pump sale and every tank probe reading, and sends them to your dashboard as they happen.' },
+      { question: 'What happens if the internet goes down?', answer: 'The forecourt controller keeps every sale while the connection is down and sends them once it is back, so nothing recorded is lost.' },
+      { question: 'How do I know when a tank is running low?', answer: 'The tank page shows the level and stock in each tank, with a warning when one falls below 15%.' },
+      { question: 'Do attendants need a computer?', answer: 'No. Attendants record sales and look up customers on an Android handheld.' },
+      { question: 'Can I run several stations from one account?', answer: 'Yes. An owner runs several stations from one sign-in, each in its own currency, with owner, manager and attendant roles.' },
+      { question: 'Does ILACORE FMS issue KRA eTIMS invoices?', answer: 'Not yet. KRA eTIMS invoicing is in development and is not part of ILACORE FMS today.' },
+    ],
   },
   {
     slug: 'telematics',
@@ -169,8 +186,18 @@ export const products: Product[] = [
       ],
     },
     screens: [{ src: '/screens/telematics-fleet.png', caption: 'Vehicles and live map', alt: 'ILACORE Telematics vehicle list beside a live map of Kisumu: four demo vehicles marked offline, driving or idle, each with its speed and when it was last seen', width: 810, height: 684 }],
-    industries: ['fleet-depots', 'transport'],
-    seoDescription: 'ILACORE Telematics shows every vehicle on a live map, with trip replay, geofences, live dashcam video and AI alerts for fatigue, phone use and collisions.',
+    industries: ['transport'],
+    seoDescription: 'Fleet tracking with AI dashcams: every vehicle on a live map, with trip replay, geofences, live video and alerts for fatigue, phone use and collisions.',
+    seoTitle: 'Fleet Tracking with AI Dashcams | ILACORE Telematics',
+    descriptor: 'Fleet tracking with AI dashcams',
+    faq: [
+      { question: 'How is an AI dashcam different from a GPS tracker?', answer: 'A GPS tracker shows where a vehicle is. The AI dashcam also has road-facing and driver-facing cameras, so it raises alerts for fatigue, phone use and collision risk, and you can watch live video from the cab.' },
+      { question: 'Which alerts does the dashcam raise?', answer: 'Forward collision, lane departure, pedestrian ahead, fatigue, phone use and distraction. They are detected on the camera itself, and you choose which ones your fleet records.' },
+      { question: 'What happens when a vehicle has no signal?', answer: 'The dashcam stores its positions and sends them when the signal returns, so the trip stays complete.' },
+      { question: 'Can I talk to the driver?', answer: 'Yes. Two-way talk through the dashcam lasts up to 5 minutes at a time. Video and talk are metered to keep data costs down.' },
+      { question: 'Is there a phone app?', answer: 'Yes. The Android app has the full dashboard, with alerts as notifications. One sign-in works for web and app.' },
+      { question: 'Who installs the dashcams?', answer: 'ILACORE installs and configures the dashcam in each vehicle.' },
+    ],
   },
   {
     slug: 'lpg',
@@ -187,6 +214,9 @@ export const products: Product[] = [
     screens: [],
     industries: [],
     seoDescription: 'ILACORE LPG is in development: cylinder tracking for LPG distributors, from depot to truck to shop. Register your interest.',
+    seoTitle: 'ILACORE LPG',
+    descriptor: 'Cylinder tracking for LPG distributors',
+    faq: [],
   },
 ];
 
