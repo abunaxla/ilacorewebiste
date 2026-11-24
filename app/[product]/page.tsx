@@ -39,19 +39,31 @@ export default async function ProductPage({ params }: Props) {
   if (!product || product.status !== 'live') notFound();
   const forWho = industries.filter((i) => product.industries.includes(i.slug));
 
+  // Service, not Product: Google reports a Product with no price or review as an error.
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'Service',
     name: product.name,
     url: `${site.url}/${product.slug}`,
     description: product.seoDescription,
-    brand: { '@type': 'Organization', name: 'ILACORE' },
-    category: product.slug === 'fms' ? 'Fuel management system' : 'Fleet telematics',
+    provider: { '@id': `${site.url}/#organization` },
+    areaServed: ['Africa', 'Middle East'],
+    serviceType: product.slug === 'fms' ? 'Fuel management system' : 'Fleet telematics',
+  };
+
+  const breadcrumbs = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: product.name, item: `${site.url}/${product.slug}` },
+    ],
   };
 
   return (
     <main id="main" tabIndex={-1}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbs) }} />
 
       <section className="px-3 pt-3 sm:px-4 sm:pt-4">
         <div data-surface="dark" className="stage overflow-hidden rounded-[var(--radius-stage)] text-white">

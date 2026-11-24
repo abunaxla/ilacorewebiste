@@ -35,7 +35,7 @@ test('product pages emit Product JSON-LD and link to industries', async ({ page 
   const blocks = await page.locator('main script[type="application/ld+json"]').allTextContents();
   // Page content has no `<`, so this guards the output shape only; the escaping itself is unit-tested in json-ld.test.ts.
   for (const b of blocks) expect(b).not.toContain('<');
-  const ld = blocks.map((b) => JSON.parse(b)).find((x) => x['@type'] === 'Product');
+  const ld = blocks.map((b) => JSON.parse(b)).find((x) => x['@type'] === 'Service');
   expect(ld).toBeTruthy();
   expect(ld.name).toBe('ILACORE FMS');
   await expect(page.locator('main a[href^="/industries#"]').first()).toBeVisible();

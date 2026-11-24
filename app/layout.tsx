@@ -13,16 +13,20 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: 'ILACORE', template: '%s | ILACORE' },
   description: 'ILACORE builds, installs and supports live dashboards for key operations across Africa and the Middle East.',
-  openGraph: { type: 'website', siteName: 'ILACORE', locale: 'en_US' },
+  // './' resolves to each page's own address.
+  openGraph: { type: 'website', url: './', siteName: 'ILACORE', locale: 'en_US' },
   twitter: { card: 'summary_large_image' },
 };
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'ILACORE',
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  legalName: site.legalEntity,
   url: site.url,
-  logo: `${site.url}/brand/logo-color.svg`,
+  logo: `${site.url}/brand/logo-color.png`,
+  ...(site.phone ? { telephone: site.phone } : {}),
   areaServed: ['Africa', 'Middle East'],
   contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email },
 };

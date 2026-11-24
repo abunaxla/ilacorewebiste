@@ -7,12 +7,21 @@ import { DemoSection } from '@/components/demo-section';
 import { OfflineDiagram } from '@/components/offline-diagram';
 import { BentoCard, BrowserFrame, Eyebrow, Tile } from '@/components/product-showcase';
 import { comingSoonProducts, getProduct } from '@/content/products';
-import { whatsappLink } from '@/content/site';
+import { site, whatsappLink } from '@/content/site';
+import { safeJsonLd } from '@/lib/json-ld';
 
 export const metadata: Metadata = {
   title: { absolute: 'ILACORE: visibility for your key operations' },
   description: 'ILACORE brings visibility to your key operations, with live dashboards installed and supported by our own team across Africa and the Middle East.',
   alternates: { canonical: '/' },
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: site.url,
+  publisher: { '@id': `${site.url}/#organization` },
 };
 
 const container = 'mx-auto max-w-[1240px] px-4 sm:px-6';
@@ -36,6 +45,7 @@ export default function Home() {
   const telematics = getProduct('telematics')!;
   return (
     <main id="main" tabIndex={-1}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteJsonLd) }} />
       {/* Hero: the dark stage, lit by the brand, with the real product rising out of it. */}
       <section className="px-3 pt-3 sm:px-4 sm:pt-4">
         <div data-surface="dark" className="stage relative overflow-hidden rounded-[var(--radius-stage)] text-white">
@@ -137,7 +147,7 @@ export default function Home() {
           <BentoCard title={telematics.outcomes[2]} body="An AI dashcam in every vehicle, with road-facing and driver-facing cameras, GPS and 4G." wash="gold" layout="row" className="lg:col-span-12">
             <figure className="flex flex-col items-center">
               <div className="float-card p-5">
-                <Image src="/hardware/dashcam.jpg" alt="The AI dashcam" width={393} height={635} sizes="160px" className="h-44 w-auto sm:h-52" />
+                <Image src="/hardware/dashcam.jpg" alt={telematics.hardware.photo!.alt} width={393} height={635} sizes="160px" className="h-44 w-auto sm:h-52" />
               </div>
               <figcaption className="mt-3 text-14 text-ink-muted">The AI dashcam. Photo: MettaX.</figcaption>
             </figure>
