@@ -129,3 +129,9 @@ test('no page says ILACORE FMS reads tank probes', async ({ page }) => {
     expect(await page.locator('main').textContent(), path).not.toMatch(/connects? your pumps and tank probes|come from the tank probes|tank probe reading|tank reading reaches/i);
   }
 });
+
+test('the depot page states what limits do not do', async ({ page }) => {
+  await page.goto('/fms/depot-fuel');
+  await expect(page.locator('main')).toContainText('They do not stop the pump.');
+  await expect(page.locator('main')).not.toContainText('Telematics');
+});

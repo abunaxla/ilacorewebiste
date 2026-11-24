@@ -8,6 +8,7 @@ export const updated: Record<string, string> = {
   '/fms/stop-fuel-theft': '2026-11-24',
   '/fms/tank-monitoring': '2026-11-24',
   '/fms/handheld-pos': '2026-11-24',
+  '/fms/depot-fuel': '2026-11-24',
   '/telematics': '2026-11-24',
   '/telematics/ai-dashcam': '2026-11-24',
   '/telematics/driver-fatigue-monitoring': '2026-11-24',

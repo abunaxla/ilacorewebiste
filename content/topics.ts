@@ -383,6 +383,73 @@ export const topics: Topic[] = [
       { question: 'Can each station decide whether to use it?', answer: 'Yes. The owner switches the POS on for each station.' },
     ],
   },
+  {
+    product: 'fms',
+    slug: 'depot-fuel',
+    linkTitle: 'Fuel control for depots and private tanks',
+    linkBody: 'How a depot records every litre, which account it went to and which vehicle took it.',
+    seoTitle: 'Depot Fuel Management for Private Tanks | ILACORE FMS',
+    seoDescription: 'Fuel management for depots and private diesel tanks: every pump sale recorded, stock kept for each tank, and fuel put on account to a vehicle.',
+    title: 'Fuel control for depots and private tanks',
+    lead: 'Know what left the depot tank, who took it and what should still be there.',
+    faqHeading: 'Questions about depot fuel',
+    sections: [
+      {
+        heading: 'Three questions a depot has to answer',
+        body: ['A fuel book depends on somebody writing in it. ILACORE FMS keeps a record for each question instead.'],
+        points: [
+          { title: 'How much left the tank?', body: 'The forecourt controller records every fill at the depot pump, with its litres and time.' },
+          { title: 'Who took it?', body: 'The attendant settles the fill on a handheld, to an account and a vehicle on that account.' },
+          { title: 'What should be left?', body: 'Stock is worked out from your dips, your deliveries and the fills the controller recorded.' },
+        ],
+      },
+      {
+        heading: 'Accounts for the people who take fuel',
+        body: [
+          'Set up an account for each department, contractor or customer, and list its vehicles by registration number.',
+          'Each account has its own limit, and you can set a daily cap for each vehicle. Limits are in money, and they are checked when the attendant settles the fill. They do not stop the pump.',
+        ],
+        points: [
+          { title: 'Vehicles and cards', body: 'A card belongs to one vehicle. Tap it on the handheld to find the account, or search by phone number.' },
+          { title: 'Sub-accounts', body: 'A main account can have sub-accounts, billed together or each on its own.' },
+          { title: 'Statements', body: 'Download a monthly statement for each account: what it took on credit and what it has paid.' },
+        ],
+      },
+      {
+        heading: 'The tank at the same depot',
+        body: ['The stock and the room in each tank are on one page, with a warning when stock falls below 15%. When you dip the tank, the gap between the dip and the expected stock is worked out against the tolerance you set.'],
+        screen: { src: '/screens/fms-tanks.png', caption: 'Tank stock', alt: 'ILACORE FMS tank page: a petrol tank at 7.7 percent with a low stock warning and a diesel tank at 17.6 percent, each with litres in stock and room left', width: 1032, height: 432 },
+      },
+      {
+        heading: 'What your depot needs',
+        body: ['Our team checks your pump before we agree an installation.'],
+        points: [
+          { title: 'A pump we can connect', body: 'The controller has to be able to talk to your pump. Tell us the make and model.' },
+          { title: 'A forecourt controller', body: 'ILACORE installs it on site. It keeps every fill if the internet drops and sends it later.' },
+          { title: 'A handheld', body: 'An Android handheld with a connection, for the person at the pump.' },
+        ],
+      },
+    ],
+    comparison: {
+      heading: 'A fuel book or ILACORE FMS',
+      columns: ['Fuel book', 'ILACORE FMS'],
+      rows: [
+        ['Litres', 'Written by hand', 'Recorded from the pump'],
+        ['Vehicle', 'Written by hand', 'Chosen from the account'],
+        ['Limits', 'Remembered', 'Checked when the fill is settled'],
+        ['Tank stock', 'Known at the last dip', 'Worked out after every fill'],
+        ['Corrections', 'Crossed out', 'Kept, with the reason'],
+      ],
+      note: 'The attendant still chooses the vehicle, and the tank still has to be dipped.',
+    },
+    faq: [
+      { question: 'Does it stop the pump when a limit is reached?', answer: 'No. Limits are checked when the attendant settles the fill, after the fuel has been taken. An account over its limit cannot put that fill on credit unless you grant it an extension.' },
+      { question: 'Does it record the odometer?', answer: 'Not today. It records the litres, the amount, the time, the account and the vehicle.' },
+      { question: 'Does it read a tank probe?', answer: 'Not today. Stock is worked out from the dips and deliveries you enter and the fills the forecourt controller records.' },
+      { question: 'Can one account cover several depots?', answer: 'Yes. An owner sees every site from one sign-in.' },
+      { question: 'Will it work with our pump?', answer: 'It depends on the make and model. Send us both and we will check before you commit to anything.' },
+    ],
+  },
 ];
 
 export const topicsFor = (product: ProductSlug) => topics.filter((t) => t.product === product);

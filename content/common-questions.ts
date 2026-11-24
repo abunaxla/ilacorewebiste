@@ -5,7 +5,7 @@ export type CommonQuestion = { question: string; answer: string };
 export const commonQuestions: CommonQuestion[] = [
   {
     question: 'What happens in a demo?',
-    answer: 'We walk you through the system, answer your questions and explain what installation would involve at your stations or in your vehicles.',
+    answer: 'We walk you through the system, answer your questions and explain what installation would involve for you.',
   },
   {
     question: 'What hardware do I need?',
@@ -29,7 +29,7 @@ export const commonQuestions: CommonQuestion[] = [
   },
   {
     question: 'Where do you work?',
-    answer: 'We work with fuel station operators and vehicle fleets across Africa and the Middle East. Tell us where you operate when you book a demo.',
+    answer: 'We work across Africa and the Middle East. Tell us where you operate when you book a demo.',
   },
   {
     question: 'Is ILACORE LPG available yet?',
