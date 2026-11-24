@@ -78,3 +78,19 @@ test('the depot card stays on the FMS page only', async ({ page }) => {
   await page.goto('/fms');
   await expect(page.locator('main a[href="/industries#fleet-depots"]')).toHaveCount(1);
 });
+
+test('the AI dashcam page is linked from Telematics and stays on its own product', async ({ page }) => {
+  await page.goto('/telematics');
+  await page.getByRole('link', { name: /AI dashcams for fleets/ }).click();
+  await expect(page).toHaveURL(/\/telematics\/ai-dashcam$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('AI dashcams for fleets');
+  await expect(page.getByRole('table')).toBeVisible();
+  expect(await page.locator('main').innerText()).not.toMatch(/FMS|fuel|station|companion|\bSOS\b/i);
+  const types = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((s) => JSON.parse(s)['@type']);
+  expect(types).toEqual(expect.arrayContaining(['BreadcrumbList', 'FAQPage']));
+});
+
+test('an unknown product topic is a 404', async ({ request }) => {
+  expect((await request.get('/telematics/nope')).status()).toBe(404);
+  expect((await request.get('/fms/ai-dashcam')).status()).toBe(404);
+});

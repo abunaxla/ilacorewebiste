@@ -14,6 +14,7 @@ import { safeJsonLd } from '@/lib/json-ld';
 import { industries } from '@/content/industries';
 import { getProduct, liveProducts } from '@/content/products';
 import { site } from '@/content/site';
+import { topicPath, topicsFor } from '@/content/topics';
 
 export const dynamicParams = false;
 
@@ -185,6 +186,26 @@ export default async function ProductPage({ params }: Props) {
           ))}
         </ul>
       </section>
+
+      {topicsFor(product.slug).length > 0 && (
+        <section aria-labelledby="more" className={`${container} py-12 sm:py-16`}>
+          <Eyebrow>Read more</Eyebrow>
+          <h2 id="more" className={h2}>In more detail</h2>
+          <ul className="mt-10 grid gap-4 md:grid-cols-2">
+            {topicsFor(product.slug).map((t) => (
+              <li key={t.slug}>
+                <Link href={topicPath(t)} className={`group block h-full ${card} transition-colors hover:border-ink/20`}>
+                  <span className="flex items-center justify-between gap-4 font-display text-[1.25rem] font-medium tracking-[-0.02em] text-ink">
+                    {t.linkTitle}
+                    <ArrowUpRight size={20} aria-hidden="true" className="shrink-0 text-ink/40 transition-colors group-hover:text-ink" />
+                  </span>
+                  <span className="mt-2 block text-16 text-ink-muted">{t.linkBody}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {product.faq.length > 0 && <CommonQuestions items={product.faq} heading={`Questions about ${product.name}`} />}
 
