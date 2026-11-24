@@ -9,7 +9,7 @@ import { Eyebrow } from '@/components/product-showcase';
 import { Screenshot } from '@/components/screenshot';
 import { getProduct } from '@/content/products';
 import { site } from '@/content/site';
-import { getTopic, topicPath, topics } from '@/content/topics';
+import { getTopic, topicPath, topics, topicsFor } from '@/content/topics';
 import { safeJsonLd } from '@/lib/json-ld';
 
 export const dynamicParams = false;
@@ -42,6 +42,7 @@ export default async function TopicPage({ params }: Props) {
   if (!found) notFound();
   const { topic, product } = found;
   const photo = product.hardware.photo;
+  const related = topicsFor(product.slug).filter((t) => t.slug !== topic.slug);
 
   const breadcrumbs = {
     '@context': 'https://schema.org',
@@ -134,15 +135,33 @@ export default async function TopicPage({ params }: Props) {
         </section>
       )}
 
+      {topic.sources && (
+        <section aria-labelledby="sources" className={`${container} py-6`}>
+          <h2 id="sources" className="text-[1.25rem]">Sources</h2>
+          <ul className="reading mt-3 space-y-2 text-14 text-ink-muted">
+            {topic.sources.map((s) => (
+              <li key={s.href}><a href={s.href} className="underline underline-offset-4 hover:text-ink">{s.label}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section aria-label="More about the product" className={`${container} py-10 sm:py-14`}>
         <div className="wash-navy rounded-[var(--radius-panel)] border border-ink/[0.06] p-7 sm:p-10">
           <Eyebrow>{product.audience}</Eyebrow>
           <p className="reading mt-5 text-[1.25rem] leading-relaxed text-ink">{product.summary}</p>
           <div className="mt-6"><ButtonLink href={`/${product.slug}`}>See {product.name}</ButtonLink></div>
+          {related.length > 0 && (
+            <ul className="mt-6 space-y-2 text-16">
+              {related.map((t) => (
+                <li key={t.slug}><Link href={topicPath(t)} className="text-ink underline underline-offset-4">{t.linkTitle}</Link></li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 
-      <CommonQuestions items={topic.faq} heading={`Questions about ${topic.title}`} />
+      <CommonQuestions items={topic.faq} heading={topic.faqHeading ?? `Questions about ${topic.title}`} />
       <DemoSection product={product.slug} />
     </main>
   );

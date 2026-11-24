@@ -94,3 +94,18 @@ test('an unknown product topic is a 404', async ({ request }) => {
   expect((await request.get('/telematics/nope')).status()).toBe(404);
   expect((await request.get('/fms/ai-dashcam')).status()).toBe(404);
 });
+
+test('each guide is linked from its product, cites sources and stays on its own product', async ({ page }) => {
+  for (const [product, slug, title, off] of [
+    ['telematics', 'driver-fatigue-monitoring', 'Driver fatigue monitoring', /FMS|fuel|station|companion|\bSOS\b/i],
+    ['fms', 'stop-fuel-theft', 'How to stop fuel theft at a petrol station', /telematics|dashcam|vehicle|fleet|eTIMS/i],
+  ] as const) {
+    await page.goto(`/${product}`);
+    await page.locator(`main a[href="/${product}/${slug}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`/${product}/${slug}$`));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+    await expect(page.getByRole('heading', { level: 2, name: 'Sources' })).toBeVisible();
+    expect(await page.locator('main').innerText()).not.toMatch(off);
+  }
+  await expect(page.getByText('Automatic missing-sale and loss alerts are in development.')).toHaveCount(1);
+});
