@@ -41,7 +41,7 @@ export default async function TopicPage({ params }: Props) {
   const found = await load(params);
   if (!found) notFound();
   const { topic, product } = found;
-  const photo = product.hardware.photo;
+  const photo = topic.hidePhoto ? undefined : product.hardware.photo;
   const related = topicsFor(product.slug).filter((t) => t.slug !== topic.slug);
 
   const breadcrumbs = {
@@ -60,7 +60,7 @@ export default async function TopicPage({ params }: Props) {
 
       <section className="px-3 pt-3 sm:px-4 sm:pt-4">
         <div data-surface="dark" className="stage overflow-hidden rounded-[var(--radius-stage)] text-white">
-          <div className={`${container} grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[7fr_5fr]`}>
+          <div className={`${container} grid items-center gap-12 py-16 sm:py-24 ${photo ? 'lg:grid-cols-[7fr_5fr]' : ''}`}>
             <div className="min-w-0">
               <nav aria-label="Breadcrumb">
                 <ol className="flex flex-wrap gap-x-2 text-14 text-white/75">

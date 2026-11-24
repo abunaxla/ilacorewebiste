@@ -9,14 +9,14 @@ export const industries: Industry[] = [
     slug: 'fuel-stations',
     name: 'Fuel stations',
     problem: 'Dip readings, pump totals and cash are checked by hand, at the end of the shift, if at all.',
-    answer: 'ILACORE FMS gives you live sales, tank levels and shift close for every pump, with a handheld POS for attendants.',
+    answer: 'ILACORE FMS gives you live sales, tank stock and shift close for every pump, with a handheld POS for attendants.',
     products: ['fms'],
   },
   {
     slug: 'fleet-depots',
     name: 'Fleet depots and private tanks',
     problem: 'Fuel leaves the depot tank, but it is hard to match each litre to a vehicle.',
-    answer: 'ILACORE FMS shows the depot tank level and every pump sale, with credit accounts and fleet reports.',
+    answer: 'ILACORE FMS shows the depot tank stock and every pump sale, with credit accounts and fleet reports.',
     products: ['fms'],
   },
   {

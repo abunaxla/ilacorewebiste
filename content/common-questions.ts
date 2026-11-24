@@ -9,7 +9,7 @@ export const commonQuestions: CommonQuestion[] = [
   },
   {
     question: 'What hardware do I need?',
-    answer: 'For ILACORE FMS, a forecourt controller on site that connects your pumps and tank probes. For ILACORE Telematics, an AI dashcam in each vehicle, with road-facing and driver-facing cameras, GPS and 4G.',
+    answer: 'For ILACORE FMS, a forecourt controller on site that connects your pumps. For ILACORE Telematics, an AI dashcam in each vehicle, with road-facing and driver-facing cameras, GPS and 4G.',
   },
   {
     question: 'Who installs and supports it?',

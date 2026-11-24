@@ -107,5 +107,25 @@ test('each guide is linked from its product, cites sources and stays on its own 
     await expect(page.getByRole('heading', { level: 2, name: 'Sources' })).toBeVisible();
     expect(await page.locator('main').innerText()).not.toMatch(off);
   }
-  await expect(page.getByText('Automatic missing-sale and loss alerts are in development.')).toHaveCount(1);
+  await expect(page.getByText('It cannot tell you why. Missing-sale alerts are in development.')).toHaveCount(1);
+});
+
+test('the FMS feature pages are linked and state their limits', async ({ page }) => {
+  for (const [slug, title, limit] of [
+    ['tank-monitoring', 'Fuel tank monitoring', 'Stock shown between dips is calculated, not measured by a probe.'],
+    ['handheld-pos', 'Handheld POS for petrol stations', 'The handheld needs the internet.'],
+  ]) {
+    await page.goto('/fms');
+    await page.locator(`main a[href="/fms/${slug}"]`).click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+    await expect(page.getByText(limit)).toBeVisible();
+    expect(await page.locator('main').innerText()).not.toMatch(/telematics|dashcam|vehicle|fleet|eTIMS|Pesapal/i);
+  }
+});
+
+test('no page says ILACORE FMS reads tank probes', async ({ page }) => {
+  for (const path of ['/', '/fms', '/fms/stop-fuel-theft', '/demo']) {
+    await page.goto(path);
+    expect(await page.locator('main').textContent(), path).not.toMatch(/connects? your pumps and tank probes|come from the tank probes|tank probe reading|tank reading reaches/i);
+  }
 });

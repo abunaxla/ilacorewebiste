@@ -107,7 +107,7 @@ export default function Home() {
           <p className="mt-5 max-w-2xl text-[1.125rem] leading-relaxed text-ink-muted">{fms.summary}</p>
         </div>
         <div className="mt-12 grid gap-4 lg:grid-cols-12">
-          <BentoCard title={fms.outcomes[1]} body="Levels come from the tank probes, refreshed every 30 seconds." wash="gold" className="lg:col-span-5">
+          <BentoCard title={fms.outcomes[1]} body="Worked out from dips, deliveries and pump sales, refreshed every 30 seconds." wash="gold" className="lg:col-span-5">
             <Tile src="/screens/tiles/fms-tanks-tile.png" alt="Two tanks: petrol at 7.7 percent with a low stock warning, diesel at 17.6 percent" width={334} height={298} sizes="(min-width: 1024px) 360px, 80vw" className="mx-auto max-w-[340px]" />
           </BentoCard>
           <BentoCard title={fms.outcomes[0]} body="Litres sold in every hour of the day, at every station." wash="white" className="lg:col-span-7">

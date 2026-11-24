@@ -23,6 +23,8 @@ export type Topic = {
   faq: Question[];
   /** Replaces "Questions about <title>" where the title does not fit that sentence. */
   faqHeading?: string;
+  /** Leaves out the product's device photo where the page is not about that device. */
+  hidePhoto?: boolean;
   /** Where the figures on the page come from. */
   sources?: { label: string; href: string }[];
 };
@@ -212,7 +214,7 @@ export const topics: Topic[] = [
           'For example, a tank opens with 12,000 litres, receives 10,000 and sells 8,400. It should hold 13,600. If it measures 13,520, you are 80 litres short, which is just under 1% of sales.',
           'One day on its own means little, because small differences are normal. Write it down daily for each tank and watch the direction. Differences that go up and down usually cancel out. A difference that is always short is a loss.',
         ],
-        screen: { src: '/screens/fms-tanks.png', caption: 'Tank levels', alt: 'ILACORE FMS tank page: a petrol tank at 7.7 percent with a low stock warning and a diesel tank at 17.6 percent, each with litres in stock and room left', width: 1032, height: 432 },
+        screen: { src: '/screens/fms-tanks.png', caption: 'Tank stock', alt: 'ILACORE FMS tank page: a petrol tank at 7.7 percent with a low stock warning and a diesel tank at 17.6 percent, each with litres in stock and room left', width: 1032, height: 432 },
       },
       {
         heading: 'Make it hard to hide',
@@ -229,8 +231,8 @@ export const topics: Topic[] = [
       {
         heading: 'What ILACORE FMS does today',
         body: [
-          'A forecourt controller reads every pump sale and tank level directly, so the numbers do not depend on what somebody writes down. If the internet drops, it keeps every sale and sends it once the connection is back.',
-          'You see each shift in detail, a day-close sheet for every station and date, and sales per product. Owners, managers and attendants have their own roles. Automatic alerts for missing sales and stock losses are in development, so today the comparison between tanks and sales is still yours to make.',
+          'A forecourt controller reads every pump sale directly, so sales do not depend on what somebody writes down. If the internet drops, it keeps every sale and sends it once the connection is back.',
+          'You enter dips and deliveries, and the tank page works out the sum above: what each tank should hold, and whether the dip is short, over or within the tolerance you set. You also see each shift in detail and a day-close sheet for every station and date. Missing-sale alerts are in development.',
         ],
         screen: { src: '/screens/fms-sales-report.png', caption: 'Sales per product', alt: 'ILACORE FMS sales report: litres, price and gross sales for diesel and petrol on each day, with daily totals and buttons to download or email the report', width: 1032, height: 688 },
       },
@@ -250,13 +252,135 @@ export const topics: Topic[] = [
     faq: [
       { question: 'How do I know if fuel is being stolen at my station?', answer: 'Reconcile each tank daily: opening stock plus deliveries minus pump sales, compared with the measured stock. A tank that is short day after day, or a shift that is short again and again, needs checking.' },
       { question: 'How much fuel loss is normal?', answer: 'Small differences are normal, because of temperature, evaporation and the accuracy of meters and dips. Ask your supplier or technician what is reasonable for your tanks, and watch the direction more than any one day.' },
-      { question: 'Are tank probes better than a dipstick?', answer: 'A dip gives one reading when somebody takes it. A probe gives a reading throughout the day without anyone writing it down. Both need the tank chart to be right.' },
-      { question: 'Can ILACORE FMS detect theft automatically?', answer: 'Not yet. It records every pump sale and tank level and shows each shift and day close, so you can compare them. Automatic missing-sale and loss alerts are in development.' },
+      { question: 'Are tank probes better than a dipstick?', answer: 'A dip gives one reading when somebody takes it. A probe gives a reading throughout the day without anyone writing it down. Both need the tank chart to be right. ILACORE FMS works from dips today.' },
+      { question: 'Can ILACORE FMS detect theft automatically?', answer: 'No. It records every pump sale and shows when a dip is short of the stock there should be, which tells you where to look. It cannot tell you why. Missing-sale alerts are in development.' },
       { question: 'Does ILACORE FMS work during an internet outage?', answer: 'Yes. The forecourt controller keeps every sale while the connection is down and sends it once it is back.' },
     ],
     sources: [
       { label: 'Veeder-Root: Detecting and reducing loss in your fueling system', href: 'https://www.veeder.com/us/blog/detecting-and-reducing-loss-your-fueling-system' },
       { label: 'Gilbarco Veeder-Root: Where are you losing fuel and why it matters', href: 'https://www.gilbarco.com/mea/blog/where-are-you-losing-fuel-and-why-it-matters' },
+    ],
+  },
+  {
+    product: 'fms',
+    slug: 'tank-monitoring',
+    linkTitle: 'Fuel tank monitoring',
+    linkBody: 'How stock is kept for every tank, and how a shortage shows up.',
+    seoTitle: 'Fuel Tank Monitoring for Petrol Stations | ILACORE FMS',
+    seoDescription: 'Fuel tank monitoring for petrol stations: stock and room in every tank, a low stock warning below 15%, and variance between dips against a set tolerance.',
+    title: 'Fuel tank monitoring',
+    lead: 'Know what should be in every tank, and see when the dip does not agree.',
+    faqHeading: 'Questions about fuel tank monitoring',
+    sections: [
+      {
+        heading: 'Stock that moves with every sale',
+        body: [
+          'A dip tells you what was in the tank at that moment. A few hundred sales later it is out of date.',
+          'ILACORE FMS starts from your dip and keeps counting. Each pump sale the forecourt controller records comes off the stock, and each delivery you enter goes on. The result is the book stock: what the tank should hold now. The page refreshes itself every 30 seconds.',
+        ],
+        screen: { src: '/screens/fms-tanks.png', caption: 'Tank stock', alt: 'ILACORE FMS tank page: a petrol tank at 7.7 percent with a low stock warning and a diesel tank at 17.6 percent, each with litres in stock and room left', width: 1032, height: 432 },
+      },
+      {
+        heading: 'What you see for each tank',
+        body: ['Every tank at every station you run, on one page.'],
+        points: [
+          { title: 'Stock and fill', body: 'Litres in stock, the capacity, and how full the tank is.' },
+          { title: 'Room left', body: 'The ullage, so an order fits the tank it is meant for.' },
+          { title: 'Low stock', body: 'A warning on the page when stock falls below 15%, with an estimate of when the tank will run dry.' },
+          { title: 'Last dip', body: 'The latest measured figure and when it was taken.' },
+          { title: 'Variance', body: 'How far the dip was from the book stock: short, over or within tolerance.' },
+          { title: 'History', body: 'Closing stock by day, past variances, dips and deliveries.' },
+        ],
+      },
+      {
+        heading: 'From a dip to an answer',
+        body: ['The station measures. The system does the sums and keeps the record.'],
+        points: [
+          { title: '1. Dip the tank', body: 'Enter the measured litres. A mistake is corrected with a reason, and both figures stay on record.' },
+          { title: '2. Enter deliveries', body: 'Supplier, delivery note and litres, with dips before and after if you took them.' },
+          { title: '3. Read the variance', body: 'The next dip is compared with the book stock, against the tolerance you set in litres or as a share of sales.' },
+          { title: '4. Decide', body: 'A stock adjustment waits for the owner to approve it, so stock is not corrected quietly.' },
+        ],
+      },
+      {
+        heading: 'When the internet drops',
+        body: ['The forecourt controller keeps every pump sale and sends it once the connection is back. If late sales change a variance you have already seen, it is marked for rechecking.'],
+      },
+    ],
+    comparison: {
+      heading: 'Dips on paper or in ILACORE FMS',
+      columns: ['Dips on paper', 'ILACORE FMS'],
+      rows: [
+        ['Stock between dips', 'Not known', 'Book stock after every sale'],
+        ['Room for a delivery', 'Worked out by hand', 'Shown for each tank'],
+        ['Low stock', 'Noticed at the next dip', 'Warning on the page below 15%'],
+        ['Variance', 'Worked out by hand', 'Worked out at each dip'],
+        ['Corrections', 'Crossed out', 'Kept, with the reason'],
+      ],
+      note: 'ILACORE FMS still needs your dips. Stock shown between dips is calculated, not measured by a probe.',
+    },
+    faq: [
+      { question: 'Does ILACORE FMS read tank probes?', answer: 'Not today. Stock is worked out from the dips and deliveries you enter and the pump sales the forecourt controller records.' },
+      { question: 'What is ullage?', answer: 'Ullage is the empty room left in a tank. It tells you how much fuel the tank can still take.' },
+      { question: 'How does the low stock warning work?', answer: 'The tank page shows a warning when the stock of a tank falls below 15% of its capacity.' },
+      { question: 'How often should tanks be dipped?', answer: 'At least once a day, at the same time, and before and after every delivery. A dip at each shift change makes a shortage easier to place.' },
+      { question: 'Can I see tanks at several stations?', answer: 'Yes. An owner sees the tanks of every station from one sign-in.' },
+    ],
+  },
+  {
+    product: 'fms',
+    slug: 'handheld-pos',
+    linkTitle: 'Handheld POS for petrol stations',
+    linkBody: 'How attendants settle sales, find customers and close a shift at the pump.',
+    seoTitle: 'Petrol Station POS on an Android Handheld | ILACORE FMS',
+    seoDescription: 'A petrol station POS for attendants: settle pump sales by cash, M-Pesa, card or credit on an Android handheld, give receipts and close the shift.',
+    title: 'Handheld POS for petrol stations',
+    lead: 'The pump reports the sale. The attendant takes the payment, gives the receipt and moves on.',
+    faqHeading: 'Questions about the handheld POS',
+    hidePhoto: true,
+    sections: [
+      {
+        heading: 'The sale comes from the pump',
+        body: [
+          'With an ordinary till, an attendant types in what was sold. Here the forecourt controller records the fill, and it appears on the handheld with its litres and amount.',
+          'The attendant settles that sale. There are no litres to type, so the sale on the handheld is the sale at the pump.',
+        ],
+      },
+      {
+        heading: 'What an attendant does on it',
+        body: ['It runs in the browser on an Android handheld, so it needs no separate computer.'],
+        points: [
+          { title: 'Sign in with a card', body: 'Tap an attendant card, or type its number. The handheld itself is enrolled by the owner first.' },
+          { title: 'Open the shift', body: 'Enter the cash in the float and start.' },
+          { title: 'Settle sales', body: 'Record cash, M-Pesa, card or credit, or split one sale between them.' },
+          { title: 'Find a customer', body: 'By card or phone number, for a customer who buys on credit.' },
+          { title: 'Give a receipt', body: 'Print it, or send it to the customer’s phone. Earlier receipts from the shift can be given again.' },
+          { title: 'Drop cash', body: 'Record cash moved to the safe. A wrong entry is undone with a reason, and stays on record.' },
+        ],
+      },
+      {
+        heading: 'A shift close that is counted first',
+        body: [
+          'At the end of the shift the attendant enters the cash they counted. The expected figure is not shown on that screen, so the count is a real count.',
+          'The manager then sees the shift in detail, and a day-close sheet for the station.',
+        ],
+      },
+      {
+        heading: 'What the device needs',
+        body: ['Check these three things before buying handhelds.'],
+        points: [
+          { title: 'Android with Chrome', body: 'The POS runs in the browser and can be added to the home screen.' },
+          { title: 'A connection', body: 'The handheld needs the internet. If it drops, the forecourt controller still keeps every pump sale.' },
+          { title: 'NFC and a printer', body: 'Tapping cards needs NFC in the device. Receipts print on a Bluetooth LE receipt printer or through the device’s own printing.' },
+        ],
+      },
+    ],
+    faq: [
+      { question: 'Which handhelds does it run on?', answer: 'Android handhelds with the Chrome browser. Tapping cards needs NFC, and direct printing needs a Bluetooth LE receipt printer. Ask us about a model before you buy it.' },
+      { question: 'Does the handheld work offline?', answer: 'No. It needs a connection. The forecourt controller keeps every pump sale while the internet is down and sends it once it is back.' },
+      { question: 'Can a customer pay in two ways?', answer: 'Yes. One sale can be split, for example part cash and part M-Pesa.' },
+      { question: 'Is the handheld a card terminal?', answer: 'No. It records how the customer paid. Card payments are taken on your own terminal.' },
+      { question: 'Can each station decide whether to use it?', answer: 'Yes. The owner switches the POS on for each station.' },
     ],
   },
 ];
